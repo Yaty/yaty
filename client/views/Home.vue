@@ -15,11 +15,9 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     <h1 class="is-title is-bold">{{ name.replace('-', ' ') }}</h1>
 
     <p>
-      <strong>{{ description }}</strong>,
-      <a :href="homepage">Live Demo</a>
+      <strong>{{ projectdescription }}</strong>
     </p>
 
-    <p>Supports Vue 2.0 and Bulma 0.3!</p>
   </div>
 </template>
 

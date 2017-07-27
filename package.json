@@ -1,7 +1,11 @@
 {
   "name": "yaty-admin",
   "version": "0.0.1",
-  "description": "Vue Admin Panel Framework",
+  "projectdescription": {
+    "climber": "",
+    "climbinggym": "",
+    "routesetters": ""
+  },
   "license": "Closed-source code",
   "private": true,
   "author": {
