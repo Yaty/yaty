@@ -11,19 +11,24 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     <div class="container">
       <div class="content has-text-centered">
         <p class="social">
-          <a :href="'https://github.com/' + repository">
+          <a :href="'mailto:' + author.email">
             <span class="icon">
-              <i class="fa fa-github"></i>
+              <i class="fa fa-envelope"></i>
             </span>
           </a>
-          <a href="https://twitter.com/_fundon">
+          <a href="#">
+            <span class="icon">
+              <i class="fa fa-facebook"></i>
+            </span>
+          </a>
+          <a href="#">
             <span class="icon">
               <i class="fa fa-twitter"></i>
             </span>
           </a>
         </p>
-        <p><span class="icon"><i class="fa fa-code"></i></span> with <span class="icon"><i class="fa fa-heart"></i></span> by <a href="https://github.com/fundon">fundon</a>.</p>
-        <p>Code licensed under <a :href="'https://github.com/' + repository + '/blob/master/LICENSE'">{{ license }}</a>.</p>
+        <p>Based on Vue-admin by <a href="https://github.com/fundon">fundon</a>.</p>
+        <p>Copyright {{ new Date().getFullYear() }} © <a href="http://hdaroit.fr" title="contact@hdaroit.fr">Hugo Da Roit</a> - All Rights Reserved</p>
       </div>
     </div>
   </footer>
