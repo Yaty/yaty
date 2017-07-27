@@ -19,6 +19,7 @@
         </div>
         <div class="nav-right is-flex">
           <router-link v-if="!$auth.check()" to="/login" class="nav-item">Login</router-link>
+          <router-link v-if="!$auth.check()" to="/register" class="nav-item">Register</router-link>
           <a v-if="$auth.check()" @click="logout" class="nav-item">Logout</a>
         </div>
       </nav>
@@ -53,10 +54,6 @@ export default {
       this.$auth.logout({
         redirect: 'Home',
         makeRequest: false
-        // params: {},
-        // success: function () {},
-        // error: function () {},
-        // etc...
       })
     }
   }

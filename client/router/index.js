@@ -18,6 +18,11 @@ export default new Router({
       path: '/login',
       component: require('../views/auth/Login')
     },
+    {
+      name: 'Register',
+      path: '/register',
+      component: require('../views/auth/Register')
+    },
     ...generateRoutesFromMenu(menuModule.state.items),
     {
       path: '*',

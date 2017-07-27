@@ -24,8 +24,9 @@ Vue.use(VueAuth, {
   },
   http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
   router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
-  loginData: { url: process.env.BACKEND + 'auth/login', fetchUser: false },
-  refreshData: { enabled: false }
+  refreshData: { enabled: false },
+  registerData: { url: process.env.BACKEND + 'auth/register', method: 'POST', redirect: '/login' },
+  loginData: { url: process.env.BACKEND + 'auth/login', method: 'POST', redirect: '/', fetchUser: false }
 })
 
 Vue.use(NProgress)
