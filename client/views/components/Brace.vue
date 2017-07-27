@@ -1,3 +1,11 @@
+<!--
+Copyright (C) Hugo Da Roit <contact@hdaroit.fr> - All Rights Reserved
+Unauthorized copying of this file, via any medium is strictly prohibited
+Proprietary and confidential
+Written by Hugo Da Roit <contact@hdaroit.fr>, 2017
+Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
+-->
+
 <template>
   <div class="tile is-ancestor">
     <div class="tile is-parent is-4">
@@ -98,9 +106,9 @@
     <div class="tile is-parent">
       <article class="tile is-child box brace-container">
         <brace
-          style="min-height: 100%; min-width: 100%" 
-          :fontsize="this.selected.fontsize" 
-          :theme="this.selected.theme" 
+          style="min-height: 100%; min-width: 100%"
+          :fontsize="this.selected.fontsize"
+          :theme="this.selected.theme"
           :mode="this.selected.mode"
           :codefolding="this.selected.codefolding"
           :softwrap="this.selected.softwrap"

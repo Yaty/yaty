@@ -1,12 +1,17 @@
 {
-  "name": "vue-admin",
-  "version": "0.1.12",
+  "name": "yaty-admin",
+  "version": "0.0.1",
   "description": "Vue Admin Panel Framework",
-  "repository": "vue-bulma/vue-admin",
-  "homepage": "https://admin.vuebulma.com",
-  "license": "MIT",
+  "license": "Closed-source code",
+  "private": true,
   "author": {
-    "name": "Fangdun Cai",
+    "name": "Hugo Da Roit",
+    "email": "contact@hdaroit.fr",
+    "url": "hdaroit.fr"
+  },
+  "basedOn": {
+    "project": "Vue-admin",
+    "author": "Fangdun Cai",
     "email": "cfddream@gmail.com",
     "url": "fundon.me"
   },
