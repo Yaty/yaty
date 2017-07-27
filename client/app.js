@@ -18,8 +18,7 @@ Vue.use(VueAuth, {
       this.options.http._setHeaders.call(this, req, {Authorization: 'Bearer ' + token})
     },
     response: function (res) {
-      // Get Token from response body
-      return res.data
+      return res.data.token
     }
   },
   http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
