@@ -9,13 +9,18 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 <template>
   <div class="content has-text-centered">
     <p>
-      <img width="200" src="~assets/logo.svg" :alt="description">
+      <img width="200" src="~assets/logo.svg" :alt="projectdescription">
     </p>
 
     <h1 class="is-title is-bold">{{ name.replace('-', ' ') }}</h1>
 
     <p>
       <strong>{{ projectdescription }}</strong>
+    </p>
+
+    <p>
+      TMP :
+      <strong>{{ $auth.user() }}</strong>
     </p>
 
   </div>
