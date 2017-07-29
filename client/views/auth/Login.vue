@@ -17,7 +17,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         <form v-on:submit.prevent="login">
           <label class="label">Email</label>
           <p class="control">
-            <input v-model="data.body.username" class="input" type="text" placeholder="email@example.org">
+            <input v-model="data.body.email" class="input" type="text" placeholder="email@example.org">
           </p>
           <label class="label">Password</label>
           <p class="control">
@@ -50,7 +50,7 @@ export default {
     return {
       data: {
         body: {
-          username: null,
+          email: null,
           password: null
         },
         rememberMe: false
@@ -75,7 +75,7 @@ export default {
         rememberMe: this.data.rememberMe,
         redirect: {name: redirect ? redirect.from.name : 'Home'},
         success (res) {
-          console.log('Auth Success', res)
+          // console.log('Auth Success', res)
           // console.log('Token: ' + this.$auth.token())
           // console.log(res)
         },

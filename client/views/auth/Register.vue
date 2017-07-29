@@ -15,9 +15,17 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         <div class="box">
           <div v-show="error" style="color:red; word-wrap:break-word;">{{ error }}</div>
           <form v-on:submit.prevent="register">
+            <label class="label">Name</label>
+            <p class="control">
+              <input v-model="data.body.name" class="input" type="text" placeholder="Adam">
+            </p>
+            <label class="label">Last name</label>
+            <p class="control">
+              <input v-model="data.body.lastname" class="input" type="text" placeholder="Ondra">
+            </p>
             <label class="label">Email</label>
             <p class="control">
-              <input v-model="data.body.username" class="input" type="text" placeholder="email@example.org">
+              <input v-model="data.body.email" class="input" type="text" placeholder="email@example.org">
             </p>
             <label class="label">Password</label>
             <p class="control">
@@ -50,8 +58,10 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       return {
         data: {
           body: {
-            username: null,
-            password: null
+            email: null,
+            password: null,
+            name: null,
+            lastname: null
           },
           rememberMe: false
         },
@@ -76,7 +86,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           redirect: {name: redirect ? redirect.from.name : 'Home'},
           autoLogin: true,
           success (res) {
-            console.log('Register Success', res)
+            // console.log('Register Success', res)
             // console.log('Token: ' + this.$auth.token())
             // console.log(res)
           },
