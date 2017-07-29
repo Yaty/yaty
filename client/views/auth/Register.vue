@@ -76,7 +76,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     },
     methods: {
       register () {
-        const redirect = this.$auth.redirect()
         this.$auth.register({
           headers: {
             'Content-Type': 'application/json'
