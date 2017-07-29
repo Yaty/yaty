@@ -83,7 +83,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           },
           data: this.data.body,
           rememberMe: this.data.rememberMe,
-          redirect: {name: redirect ? redirect.from.name : 'Home'},
           autoLogin: true,
           success (res) {
             // console.log('Register Success', res)
