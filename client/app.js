@@ -31,10 +31,13 @@ Vue.use(VueAuth, {
   },
   http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
   router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
-  refreshData: { enabled: false },
-  registerData: { url: process.env.BACKEND + 'auth/register', method: 'POST', redirect: '/login' },
-  loginData: { url: process.env.BACKEND + 'auth/login', method: 'POST', redirect: '/', fetchUser: false }
+  registerData: { url: process.env.BACKEND + 'auth/register' },
+  loginData: { url: process.env.BACKEND + 'auth/login' },
+  refreshData: { url: process.env.BACKEND + 'auth/refresh' },
+  fetchData: { url: process.env.BACKEND + 'auth/user' }
 })
+
+// use 419 to know when token is out of date
 
 Vue.use(NProgress)
 
