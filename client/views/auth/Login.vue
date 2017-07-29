@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     login () {
-      var redirect = this.$auth.redirect()
+      const redirect = this.$auth.redirect()
       this.$auth.login({
         headers: {
           'Content-Type': 'application/json'
@@ -74,6 +74,7 @@ export default {
         data: this.data.body,
         rememberMe: this.data.rememberMe,
         redirect: {name: redirect ? redirect.from.name : 'Home'},
+        fetchUser: true,
         success (res) {
           // console.log('Auth Success', res)
           // console.log('Token: ' + this.$auth.token())
