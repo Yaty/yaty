@@ -24,11 +24,13 @@ export default new Router({
     {
       name: 'Login',
       path: '/login',
+      auth: false,
       component: require('../views/auth/Login')
     },
     {
       name: 'Register',
       path: '/register',
+      auth: false,
       component: require('../views/auth/Register')
     },
     ...generateRoutesFromMenu(menuModule.state.items),
