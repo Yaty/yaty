@@ -20,7 +20,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
     <p>
       TMP :
-      <strong>{{ $auth.user() }}</strong>
+      <strong>2 {{ $store.getters.user }}</strong>
     </p>
 
   </div>

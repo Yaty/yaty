@@ -74,8 +74,9 @@ export default {
         data: this.data.body,
         rememberMe: this.data.rememberMe,
         redirect: {name: redirect ? redirect.from.name : 'Home'},
-        fetchUser: true,
+        fetchUser: false,
         success (res) {
+          // TODO : do something with the gyms array here (into the Vuex store ?)
           // console.log('Auth Success', res)
           // console.log('Token: ' + this.$auth.token())
           // console.log(res)

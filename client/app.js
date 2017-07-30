@@ -33,7 +33,8 @@ Vue.use(VueAuth, {
   router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
   registerData: { url: process.env.BACKEND + 'auth/register' },
   loginData: { url: process.env.BACKEND + 'auth/login' },
-  refreshData: { url: process.env.BACKEND + 'auth/refresh' },
+  logoutData: { url: process.env.BACKEND + 'auth/logout' },
+  refreshData: { enabled: false },
   fetchData: { url: process.env.BACKEND + 'auth/user' }
 })
 
@@ -54,7 +55,14 @@ router.beforeEach((route, redirect, next) => {
   if (state.app.device.isMobile && state.app.sidebar.opened) {
     store.commit(TOGGLE_SIDEBAR, false)
   }
-  next()
+
+  if (route.name === 'Login' && app.$auth.check()) {
+    next(false)
+  } else if (route.name === 'Register' && app.$auth.check()) {
+    next(false)
+  } else {
+    next()
+  }
 })
 
 Object.keys(filters).forEach(key => {
@@ -65,7 +73,19 @@ const app = new Vue({
   router,
   store,
   nprogress,
-  ...App
+  ...App,
+  watch: {
+    // Binding Vue Auth user data to our store
+    '$auth.watch.data' (data) {
+      this.$store.dispatch('updateUser', {
+        email: data.email,
+        name: data.name,
+        lastname: data.lastname,
+        gyms: data.gyms,
+        lastLogin: data.lastLogin
+      })
+    }
+  }
 })
 
 export { app, router, store }

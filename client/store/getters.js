@@ -15,6 +15,7 @@ const menuitems = state => state.menu.items
 const componententry = state => {
   return state.menu.items.filter(c => c.meta && c.meta.label === 'Components')[0]
 }
+const user = state => state.app.user
 
 export {
   pkg,
@@ -23,5 +24,6 @@ export {
   sidebar,
   effect,
   menuitems,
-  componententry
+  componententry,
+  user
 }

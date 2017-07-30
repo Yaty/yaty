@@ -19,6 +19,13 @@ const state = {
   },
   effect: {
     translate3d: true
+  },
+  user: {
+    email: 'lol',
+    name: null,
+    lastname: null,
+    gyms: null,
+    lastLogin: null
   }
 }
 
@@ -44,6 +51,14 @@ const mutations = {
     for (let name in effectItem) {
       state.effect[name] = effectItem[name]
     }
+  },
+
+  [types.UPDATE_USER] (state, user) {
+    state.user.email = user.email
+    state.user.name = user.name
+    state.user.lastname = user.lastname
+    state.user.gyms = user.gyms
+    state.user.lastLogin = user.lastLogin
   }
 }
 

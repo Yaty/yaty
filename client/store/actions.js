@@ -28,3 +28,7 @@ export const switchEffect = ({ commit }, effectItem) => {
     commit(types.SWITCH_EFFECT, effectItem)
   }
 }
+
+export const updateUser = ({ commit }, user) => {
+  commit(types.UPDATE_USER, user)
+}
