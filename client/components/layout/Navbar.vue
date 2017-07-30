@@ -61,7 +61,7 @@ export default {
     logout () {
       this.$auth.logout({
         redirect: 'Home',
-        makeRequest: false
+        makeRequest: true
       })
     }
   }
