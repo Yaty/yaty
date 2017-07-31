@@ -29,8 +29,8 @@ Vue.use(VueAuth, {
       return res.data.token
     }
   },
-  http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
-  router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
+  http: require('@websanova/vue-auth/drivers/http/axios.1.x'),
+  router: require('@websanova/vue-auth/drivers/router/vue-router.2.x'),
   registerData: { url: process.env.BACKEND + 'auth/register' },
   loginData: { url: process.env.BACKEND + 'auth/login' },
   logoutData: { url: process.env.BACKEND + 'auth/logout' },
@@ -38,32 +38,12 @@ Vue.use(VueAuth, {
   fetchData: { url: process.env.BACKEND + 'auth/user' }
 })
 
-// use 419 to know when token is out of date
-
 Vue.use(NProgress)
 
 // Enable devtools
 Vue.config.devtools = true
 
-sync(store, router)
-
 const nprogress = new NProgress({ parent: '.nprogress-container' })
-
-const { state } = store
-
-router.beforeEach((route, redirect, next) => {
-  if (state.app.device.isMobile && state.app.sidebar.opened) {
-    store.commit(TOGGLE_SIDEBAR, false)
-  }
-
-  if (route.name === 'Login' && app.$auth.check()) {
-    next(false)
-  } else if (route.name === 'Register' && app.$auth.check()) {
-    next(false)
-  } else {
-    next()
-  }
-})
 
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
@@ -85,6 +65,23 @@ const app = new Vue({
         lastLogin: data.lastLogin
       })
     }
+  }
+})
+
+sync(store, router)
+const { state } = store
+
+router.beforeEach((route, redirect, next) => {
+  if (state.app.device.isMobile && state.app.sidebar.opened) {
+    store.commit(TOGGLE_SIDEBAR, false)
+  }
+
+  if (route.name === 'Login' && app.$auth.check()) {
+    next(false)
+  } else if (route.name === 'Register' && app.$auth.check()) {
+    next(false)
+  } else {
+    next()
   }
 })
 

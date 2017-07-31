@@ -59,6 +59,7 @@ const mutations = {
     state.user.lastname = user.lastname
     state.user.gyms = user.gyms
     state.user.lastLogin = user.lastLogin
+    state.user.selectedGym = user.gyms[0] ? user.gyms[0] : null
   }
 }
 

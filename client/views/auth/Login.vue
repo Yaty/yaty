@@ -44,6 +44,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
 
   data () {
@@ -64,6 +66,9 @@ export default {
     }
     // Can set query parameter here for auth redirect or just do it silently in login redirect.
   },
+  computed: mapGetters({
+    pkg: 'pkg'
+  }),
   methods: {
     login () {
       const redirect = this.$auth.redirect()
@@ -74,13 +79,7 @@ export default {
         data: this.data.body,
         rememberMe: this.data.rememberMe,
         redirect: {name: redirect ? redirect.from.name : 'Home'},
-        fetchUser: false,
-        success (res) {
-          // TODO : do something with the gyms array here (into the Vuex store ?)
-          // console.log('Auth Success', res)
-          // console.log('Token: ' + this.$auth.token())
-          // console.log(res)
-        },
+        fetchUser: true,
         error (err) {
           if (err.response) {
             // The request was made, but the server responded with a status code
@@ -91,7 +90,8 @@ export default {
             this.error = err.response.data
           } else {
             // Something happened in setting up the request that triggered an Error
-            console.log('Error', err.message)
+            console.log('Error login', err)
+            this.error = 'Unknown error, contact : ' + this.pkg.author.email
           }
           console.log(err.config)
         }

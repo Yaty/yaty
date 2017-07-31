@@ -20,18 +20,24 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
     <p>
       TMP :
-      <strong>2 {{ $store.getters.user }}</strong>
+      <strong>2 {{ user }}</strong>
     </p>
 
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
 
   data () {
     return this.$store.state.pkg
-  }
+  },
+
+  computed: mapGetters({
+    user: 'user'
+  })
 
 }
 </script>

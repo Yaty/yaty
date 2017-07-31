@@ -14,6 +14,16 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           <a class="nav-item is-hidden-tablet" @click="toggleSidebar({opened: !sidebar.opened})">
             <i class="fa fa-bars" aria-hidden="true" v-show="!sidebar.hidden"></i>
           </a>
+          <p class="control nav-item">
+              <span class="select" v-if="user.gyms.length > 0">
+                <select v-on:change="selectGym">
+                  <option v-for="gym in user.gyms" :value="gym">{{ gym }}</option>
+                </select>
+              </span>
+              <span v-else>
+                <router-link to="/" class="button is-success is-outlined">Add a gym</router-link>
+              </span>
+          </p>
         </div>
         <div class="nav-center">
           <a class="nav-item hero-brand" href="/">
@@ -51,7 +61,8 @@ export default {
 
   computed: mapGetters({
     pkginfo: 'pkg',
-    sidebar: 'sidebar'
+    sidebar: 'sidebar',
+    user: 'user'
   }),
 
   methods: {
@@ -63,6 +74,9 @@ export default {
         redirect: 'Home',
         makeRequest: true
       })
+    },
+    selectGym () {
+      console.log('Select gym')
     }
   }
 }
