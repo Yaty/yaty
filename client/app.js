@@ -57,6 +57,7 @@ const app = new Vue({
   watch: {
     // Binding Vue Auth user data to our store
     '$auth.watch.data' (data) {
+      if (!data) return
       this.$store.dispatch('updateUser', {
         email: data.email,
         name: data.name,
