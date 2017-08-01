@@ -131,7 +131,7 @@ export default {
   },
 
   watch: {
-    $route (route) {
+    '$route' (route) {
       this.isReady = true
       this.shouldExpandMatchItem(route)
     }
