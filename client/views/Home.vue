@@ -22,7 +22,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       TMP :
       <strong>2 {{ user }}</strong>
     </p>
-
   </div>
 </template>
 
