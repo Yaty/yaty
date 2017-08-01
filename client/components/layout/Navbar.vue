@@ -15,25 +15,25 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
             <i class="fa fa-bars" aria-hidden="true" v-show="!sidebar.hidden"></i>
           </a>
           <p class="control nav-item">
-              <span class="select" v-if="user.gyms.length > 0">
+              <span class="select" v-if="$auth.check() && user.gyms && user.gyms.length > 0">
                 <select v-on:change="selectGym">
                   <option v-for="gym in user.gyms" :value="gym">{{ gym }}</option>
                 </select>
               </span>
-              <span v-else>
-                <router-link to="/" class="button is-success is-outlined">Add a gym</router-link>
+              <span v-else-if="$auth.check()">
+                <router-link to="/" class="button is-success is-outlined">Add a gym first</router-link>
               </span>
           </p>
         </div>
         <div class="nav-center">
-          <a class="nav-item hero-brand" href="/">
+          <router-link class="nav-item hero-brand" to="/">
             <img src="~assets/logo.svg" :alt="pkginfo.description">
             <tooltip :label="'v' + pkginfo.version" placement="right" type="success" size="small" :no-animate="true" :always="true" :rounded="true">
               <div class="is-hidden-mobile">
                 <span class="vue">Vue</span><strong class="admin">Admin</strong>
               </div>
             </tooltip>
-          </a>
+          </router-link>
         </div>
         <div class="nav-right is-flex">
           <router-link v-if="!$auth.check()" to="/login" class="nav-item">Login</router-link>
@@ -71,7 +71,7 @@ export default {
     ]),
     logout () {
       this.$auth.logout({
-        redirect: 'Home',
+        redirect: '/',
         makeRequest: true
       })
     },
