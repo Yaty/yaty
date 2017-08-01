@@ -12,7 +12,7 @@ import menuModule from 'vuex-store/modules/menu'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'hash', // Demo is living in GitHub.io, so required!
+  mode: 'hash',
   linkActiveClass: 'is-active',
   scrollBehavior: () => ({ y: 0 }),
   routes: [
@@ -24,19 +24,29 @@ export default new Router({
     {
       name: 'Login',
       path: '/login',
-      auth: false,
+      meta: {
+        auth: false
+      },
       component: require('../views/auth/Login')
     },
     {
       name: 'Register',
       path: '/register',
-      auth: false,
+      meta: {
+        auth: false
+      },
       component: require('../views/auth/Register')
     },
     ...generateRoutesFromMenu(menuModule.state.items),
     {
-      path: '*',
-      redirect: '/'
+      path: '/403',
+      name: 'Error 403',
+      component: require('../views/errors/403')
+    },
+    {
+      path: '/404',
+      name: 'Error 404',
+      component: require('../views/errors/404')
     }
   ]
 })
