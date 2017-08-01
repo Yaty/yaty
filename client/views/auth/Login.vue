@@ -60,12 +60,6 @@ export default {
       error: null
     }
   },
-  mounted () {
-    if (this.$auth.redirect()) {
-      console.log('Redirect from: ' + this.$auth.redirect().from.name)
-    }
-    // Can set query parameter here for auth redirect or just do it silently in login redirect.
-  },
   computed: mapGetters({
     pkg: 'pkg'
   }),
