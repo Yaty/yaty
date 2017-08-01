@@ -21,7 +21,7 @@ const state = {
     translate3d: true
   },
   user: {
-    email: 'lol',
+    email: null,
     name: null,
     lastname: null,
     gyms: null,
