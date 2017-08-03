@@ -27,8 +27,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
             </span>
           </a>
         </p>
-        <p>Based on Vue-admin by <a href="https://github.com/fundon">fundon</a>.</p>
-        <p>Copyright {{ new Date().getFullYear() }} © <a href="http://hdaroit.fr" title="contact@hdaroit.fr">Hugo Da Roit</a> - All Rights Reserved</p>
+        <p>Based on Vue-admin by <a href="https://github.com/fundon">fundon</a><br>
+        Copyright {{ new Date().getFullYear() }} © <a href="http://hdaroit.fr" title="contact@hdaroit.fr">Hugo Da Roit</a> - All Rights Reserved</p>
       </div>
     </div>
   </footer>
