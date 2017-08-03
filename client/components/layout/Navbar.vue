@@ -15,13 +15,13 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
             <i class="fa fa-bars" aria-hidden="true" v-show="!sidebar.hidden"></i>
           </a>
           <p class="control nav-item">
-              <span class="select" v-if="$auth.check() && user.gyms && user.gyms.length > 0">
+          <span class="select" v-if="$auth.check() && user.gyms && user.gyms.length > 0">
                 <select v-on:change="selectGym">
                   <option v-for="gym in user.gyms" :value="gym">{{ gym }}</option>
                 </select>
               </span>
-              <span v-else-if="$auth.check()">
-                <router-link to="/" class="button is-success is-outlined">Add a gym first</router-link>
+          <span v-else-if="$auth.check()">
+                <router-link to="/add-gym" class="button is-success is-outlined">Join or create a gym</router-link>
               </span>
           </p>
         </div>
