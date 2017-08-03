@@ -37,6 +37,14 @@ export default new Router({
       },
       component: require('../views/auth/Register')
     },
+    {
+      name: 'Add a gym',
+      path: '/add-gym',
+      meta: {
+        auth: true
+      },
+      component: require('../views/utils/AddGym')
+    },
     ...generateRoutesFromMenu(menuModule.state.items),
     {
       path: '/403',
