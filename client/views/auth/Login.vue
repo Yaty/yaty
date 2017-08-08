@@ -7,103 +7,112 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 -->
 
 <template>
-<div class="content has-text-centered">
-  <h1 class="is-title is-bold">Login</h1>
+  <div class="content has-text-centered">
+    <h1 class="is-title is-bold">Login</h1>
 
-  <div class="columns is-vcentered">
-    <div class="column is-6 is-offset-3">
-      <div class="box">
-        <div v-show="error" style="color:red; word-wrap:break-word;">{{ error }}</div>
-        <form v-on:submit.prevent="login">
-          <label class="label">Email</label>
-          <p class="control">
-            <input v-model="data.body.email" class="input" type="text" placeholder="email@example.org">
-          </p>
-          <label class="label">Password</label>
-          <p class="control">
-            <input v-model="data.body.password" class="input" type="password" placeholder="password">
-          </p>
+    <div class="columns is-vcentered">
+      <div class="column is-6 is-offset-3">
+        <div class="box">
+          <div v-if="authRedirect">You'll be redirected to {{ authRedirect.from.name }} after logging in.</div>
+          <div v-show="error" style="color:red; word-wrap:break-word;">{{ error }}</div>
+          <form v-on:submit.prevent="login">
+            <label class="label">Email</label>
+            <p class="control">
+              <input v-model="data.body.email" class="input" type="text" placeholder="email@example.org">
+            </p>
+            <label class="label">Password</label>
+            <p class="control">
+              <input v-model="data.body.password" class="input" type="password" placeholder="password">
+            </p>
 
-          <p class="control">
-            <label class="checkbox">
-              <input type="checkbox" v-model="data.rememberMe">
-              Remember me
-            </label>
-          </p>
+            <p class="control">
+              <label class="checkbox">
+                <input type="checkbox" v-model="data.rememberMe">
+                Remember me
+              </label>
+            </p>
 
-          <hr>
-          <p class="control">
-            <button type="submit" class="button is-primary">Login</button>
-            <button class="button is-default">Cancel</button>
-          </p>
-        </form>
+            <hr>
+            <p class="control level level-left">
+              <button type="submit" class="button is-primary level-item">Login</button>
+              <button class="button is-default level-item">Cancel</button>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+  import { mapGetters } from 'vuex'
 
-export default {
+  export default {
 
-  data () {
-    return {
-      data: {
-        body: {
-          email: null,
-          password: null
+    data () {
+      return {
+        data: {
+          body: {
+            email: null,
+            password: null
+          },
+          rememberMe: false
         },
-        rememberMe: false
-      },
-      error: null
-    }
-  },
-  computed: mapGetters({
-    pkg: 'pkg'
-  }),
-  methods: {
-    login () {
-      const redirect = this.$auth.redirect()
-      this.$auth.login({
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        data: this.data.body,
-        rememberMe: this.data.rememberMe,
-        redirect: {name: redirect ? redirect.from.name : 'Home'},
-        fetchUser: true,
-        error (err) {
-          if (err.response) {
-            // The request was made, but the server responded with a status code
-            // that falls out of the range of 2xx
-            // console.log(err.response.status)
-            // console.log(err.response.data)
-            // console.log(err.response.headers)
-            this.error = err.response.data
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log('Error login', err)
-            this.error = 'Unknown error, contact : ' + this.pkg.author.email
+        error: null
+      }
+    },
+    computed: {
+      ...mapGetters({
+        pkg: 'pkg'
+      }),
+      authRedirect () {
+        return this.$auth.redirect()
+      }
+    },
+    methods: {
+      // TODO : Validators
+      login () {
+        const redirect = this.authRedirect
+        this.$auth.login({
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: this.data.body,
+          rememberMe: this.data.rememberMe,
+          redirect: {name: redirect ? redirect.from.name : 'Home'},
+          success () {
+            this.$auth.fetch()
+          },
+          error (err) {
+            if (err.response) {
+              // The request was made, but the server responded with a status code
+              // that falls out of the range of 2xx
+              // console.log(err.response.status)
+              // console.log(err.response.data)
+              // console.log(err.response.headers)
+              this.error = err.response.data
+            } else {
+              // Something happened in setting up the request that triggered an Error
+              console.log('Error login', err)
+              this.error = 'Unknown error, contact : ' + this.pkg.author.email
+            }
+            console.log(err.config)
           }
-          console.log(err.config)
-        }
-      })
+        })
+      }
     }
-  }
-  // filters: {
-  //   json: function (value) {
-  //     console.log(value)
-  //     return value
-  //   }
-  // }
+    // filters: {
+    //   json: function (value) {
+    //     console.log(value)
+    //     return value
+    //   }
+    // }
 
-}
+  }
 </script>
 
 <style lang="scss" scoped>
-.is-title {
+  .is-title {
     text-transform: capitalize;
-}
+  }
 </style>

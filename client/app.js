@@ -11,6 +11,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueAuth from '@websanova/vue-auth'
 import NProgress from 'vue-nprogress'
+import Notifications from 'vue-notification'
 import { sync } from 'vuex-router-sync'
 import App from './App.vue'
 import router from './router'
@@ -32,13 +33,14 @@ Vue.use(VueAuth, {
   http: require('@websanova/vue-auth/drivers/http/axios.1.x'),
   router: require('@websanova/vue-auth/drivers/router/vue-router.2.x'),
   registerData: { url: process.env.BACKEND + 'auth/register' },
-  loginData: { url: process.env.BACKEND + 'auth/login' },
-  logoutData: { url: process.env.BACKEND + 'auth/logout' },
+  loginData: { url: process.env.BACKEND + 'auth/login', fetchUser: true },
   refreshData: { enabled: false },
-  fetchData: { url: process.env.BACKEND + 'auth/user' }
+  fetchData: { url: process.env.BACKEND + 'auth/user' },
+  rolesVar: 'role'
 })
 
 Vue.use(NProgress)
+Vue.use(Notifications)
 
 // Enable devtools
 Vue.config.devtools = true

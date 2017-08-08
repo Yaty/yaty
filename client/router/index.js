@@ -27,7 +27,7 @@ export default new Router({
       meta: {
         auth: false
       },
-      component: require('../views/auth/Login')
+      component: () => import('../views/auth/Login')
     },
     {
       name: 'Register',
@@ -35,7 +35,7 @@ export default new Router({
       meta: {
         auth: false
       },
-      component: require('../views/auth/Register')
+      component: () => import('../views/auth/Register')
     },
     {
       name: 'Add a gym',
@@ -43,18 +43,28 @@ export default new Router({
       meta: {
         auth: true
       },
-      component: require('../views/utils/AddGym')
+      component: () => import('../views/utils/AddGym')
+    },
+    {
+      name: 'Create a gym',
+      path: '/create-gym',
+      component: () => import('../views/utils/CreateGym')
     },
     ...generateRoutesFromMenu(menuModule.state.items),
     {
       path: '/403',
       name: 'Error 403',
-      component: require('../views/errors/403')
+      component: () => import('../views/errors/403')
     },
     {
       path: '/404',
       name: 'Error 404',
-      component: require('../views/errors/404')
+      component: () => import('../views/errors/404')
+    },
+    {
+      path: '*',
+      name: '404',
+      component: () => import('../views/errors/404')
     }
   ]
 })

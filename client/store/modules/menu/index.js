@@ -39,11 +39,11 @@ const state = {
       },
       component: lazyLoading('axios', true)
     },
+    managerStats,
     charts,
     uifeatures,
     components,
-    tables,
-    managerStats
+    tables
   ]
 }
 

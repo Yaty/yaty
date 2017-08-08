@@ -40,9 +40,9 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
             </p>
 
             <hr>
-            <p class="control">
-              <button type="submit" class="button is-primary">Register</button>
-              <button class="button is-default">Cancel</button>
+            <p class="control level level-left">
+              <button type="submit" class="button is-primary level-item">Register</button>
+              <button type="reset" class="button is-default level-item">Cancel</button>
             </p>
           </form>
         </div>
@@ -67,12 +67,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         },
         error: null
       }
-    },
-    mounted () {
-      if (this.$auth.redirect()) {
-        console.log('Redirect from: ' + this.$auth.redirect().from.name)
-      }
-      // Can set query parameter here for auth redirect or just do it silently in login redirect.
     },
     methods: {
       register () {

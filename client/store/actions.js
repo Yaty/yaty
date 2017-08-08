@@ -32,3 +32,11 @@ export const switchEffect = ({ commit }, effectItem) => {
 export const updateUser = ({ commit }, user) => {
   commit(types.UPDATE_USER, user)
 }
+
+export const selectGym = ({ commit }, gym) => {
+  commit(types.SELECT_GYM, gym)
+}
+
+export const addAndSelectGym = ({ commit }, gym) => {
+  commit(types.ADD_SELECT_GYM, gym)
+}

@@ -25,7 +25,8 @@ const state = {
     name: null,
     lastname: null,
     gyms: null,
-    lastLogin: null
+    lastLogin: null,
+    selectedGym: null
   }
 }
 
@@ -59,7 +60,20 @@ const mutations = {
     state.user.lastname = user.lastname
     state.user.gyms = user.gyms
     state.user.lastLogin = user.lastLogin
-    state.user.selectedGym = user.gyms[0] ? user.gyms[0] : null
+    const selectedGym = window.localStorage.getItem('selectedGym')
+    state.user.selectedGym = selectedGym || (user.gyms.length > 0 && user.gyms[0] ? user.gyms[0] : null)
+    window.localStorage.setItem('selectedGym', state.user.selectedGym)
+  },
+
+  [types.SELECT_GYM] (state, gym) {
+    window.localStorage.setItem('selectedGym', gym)
+    state.user.selectedGym = gym
+  },
+
+  [types.ADD_SELECT_GYM] (state, gym) {
+    state.user.gyms.push(gym)
+    window.localStorage.setItem('selectedGym', gym)
+    state.user.selectedGym = gym
   }
 }
 

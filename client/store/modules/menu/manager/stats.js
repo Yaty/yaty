@@ -13,8 +13,8 @@ export default {
   path: '/manager-stats',
   meta: {
     icon: 'fa-bar-chart-o',
-    expanded: false
-    // TODO : add auth with role checking
+    expanded: false,
+    auth: true
   },
   component: lazyLoading('stats/manager', true),
 
