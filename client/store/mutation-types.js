@@ -19,3 +19,5 @@ export const UPDATE_USER = 'UPDATE_USER'
 export const SELECT_GYM = 'SELECT_GYM'
 
 export const ADD_SELECT_GYM = 'ADD_SELECT_GYM'
+
+export const LOG_OUT = 'LOG_OUT'

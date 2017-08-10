@@ -25,7 +25,6 @@ const state = {
     name: null,
     lastname: null,
     gyms: null,
-    lastLogin: null,
     selectedGym: null
   }
 }
@@ -59,21 +58,52 @@ const mutations = {
     state.user.name = user.name
     state.user.lastname = user.lastname
     state.user.gyms = user.gyms
-    state.user.lastLogin = user.lastLogin
-    const selectedGym = window.localStorage.getItem('selectedGym')
-    state.user.selectedGym = selectedGym || (user.gyms.length > 0 && user.gyms[0] ? user.gyms[0] : null)
-    window.localStorage.setItem('selectedGym', state.user.selectedGym)
+    const selectedGymId = window.localStorage.getItem('selectedGymId')
+    if (selectedGymId && state.user.gyms) {
+      for (let gym of state.user.gyms) {
+        if (String(gym.id) === String(selectedGymId)) {
+          state.user.selectedGym = gym
+          return
+        }
+      }
+    }
+
+    // If the gym wasn't found we select the first gym (or null)
+    state.user.selectedGym = state.user.gyms && state.user.gyms.length > 0 && state.user.gyms[0] ? state.user.gyms[0] : null
+    if (state.user.selectedGym) window.localStorage.setItem('selectedGymId', state.user.selectedGym.id)
   },
 
   [types.SELECT_GYM] (state, gym) {
-    window.localStorage.setItem('selectedGym', gym)
+    window.localStorage.setItem('selectedGymId', gym.id)
     state.user.selectedGym = gym
   },
 
   [types.ADD_SELECT_GYM] (state, gym) {
     state.user.gyms.push(gym)
-    window.localStorage.setItem('selectedGym', gym)
+    window.localStorage.setItem('selectedGymId', gym.id)
     state.user.selectedGym = gym
+  },
+
+  [types.LOG_OUT] (state, auth) {
+    // Logging out with Vue-auth
+    auth.logout({ redirect: '/' })
+
+    // Then we clear the browser
+    window.localStorage.clear()
+    window.sessionStorage.clear()
+    const cookies = document.cookie.split(';')
+
+    for (let i = 0; i < cookies.length; i++) {
+      let cookie = cookies[i]
+      let eqPos = cookie.indexOf('=')
+      let name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie
+      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT'
+    }
+
+    // Reseting user infos to null
+    for (let key in state.user) {
+      state.user[key] = null
+    }
   }
 }
 

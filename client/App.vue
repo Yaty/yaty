@@ -51,6 +51,12 @@ export default {
     window.addEventListener('resize', handler)
   },
 
+  mounted () {
+    if (this.$auth.check()) {
+      this.$auth.fetch()
+    }
+  },
+
   computed: mapGetters({
     sidebar: 'sidebar'
   }),

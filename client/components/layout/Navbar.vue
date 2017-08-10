@@ -16,8 +16,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           </a>
           <p class="control nav-item">
             <span class="select" v-if="$auth.check() && user.gyms && user.gyms.length > 0">
-              <select @change="selectGym">
-                <option v-for="gym in user.gyms" :value="gym">{{ gym }}</option>
+              <select v-model="selectedGym">
+                <option v-for="gym in user.gyms" :value="gym">{{ gym.name }}</option>
               </select>
             </span>
             <span v-else-if="$auth.check()">
@@ -38,7 +38,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         <div class="nav-right is-flex">
           <router-link v-if="!$auth.check()" to="/login" class="nav-item">Login</router-link>
           <router-link v-if="!$auth.check()" to="/register" class="nav-item">Register</router-link>
-          <a v-if="$auth.check()" @click="logout" class="nav-item">Logout</a>
+          <a v-if="$auth.check()" @click="logout($auth)" class="nav-item">Logout</a>
         </div>
       </nav>
     </div>
@@ -69,17 +69,17 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           return this.$store.getters.user.selectedGym
         },
         set (gym) {
-          this.$store.commit('selectGym', gym)
+          this.$store.dispatch('selectGym', gym)
         }
       }
     },
 
     methods: {
       ...mapActions([
-        'toggleSidebar'
+        'toggleSidebar',
+        'logout'
       ]),
-      logout () {
-        this.$auth.logout({ redirect: '/' })
+      selectGym () {
       }
     }
   }

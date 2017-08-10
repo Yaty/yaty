@@ -78,6 +78,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           rememberMe: this.data.rememberMe,
           autoLogin: true,
           success (res) {
+            this.$auth.fetch()
             // console.log('Register Success', res)
             // console.log('Token: ' + this.$auth.token())
             // console.log(res)
