@@ -8,10 +8,20 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
 <template>
   <div>
-    404
+    {{ undefinedPage }} doesn't exists.
   </div>
 </template>
 
-<script></script>
+<script>
+  export default {
+    computed: {
+      undefinedPage () {
+        const redirect = this.$auth.redirect()
+        if (redirect) return redirect.from.name
+        return 'The page you are looking for'
+      }
+    }
+  }
+</script>
 
 <style scoped></style>

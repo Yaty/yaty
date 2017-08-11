@@ -14,18 +14,20 @@ const state = {
     isTablet: false
   },
   sidebar: {
-    opened: false,
+    opened: true,
     hidden: false
   },
   effect: {
     translate3d: true
   },
   user: {
+    logged: false,
     email: null,
     name: null,
     lastname: null,
     gyms: null,
-    selectedGym: null
+    selectedGym: null,
+    role: null
   }
 }
 
@@ -36,10 +38,10 @@ const mutations = {
   },
 
   [types.TOGGLE_SIDEBAR] (state, config) {
-    if (state.device.isMobile && config.hasOwnProperty('opened')) {
+    if (config.hasOwnProperty('opened')) {
       state.sidebar.opened = config.opened
     } else {
-      state.sidebar.opened = true
+      state.sidebar.opened = false
     }
 
     if (config.hasOwnProperty('hidden')) {
@@ -63,6 +65,7 @@ const mutations = {
       for (let gym of state.user.gyms) {
         if (String(gym.id) === String(selectedGymId)) {
           state.user.selectedGym = gym
+          state.user.role = state.user.selectedGym.role
           return
         }
       }
@@ -70,24 +73,27 @@ const mutations = {
 
     // If the gym wasn't found we select the first gym (or null)
     state.user.selectedGym = state.user.gyms && state.user.gyms.length > 0 && state.user.gyms[0] ? state.user.gyms[0] : null
+    state.user.role = state.user.selectedGym.role
     if (state.user.selectedGym) window.localStorage.setItem('selectedGymId', state.user.selectedGym.id)
   },
 
   [types.SELECT_GYM] (state, gym) {
     window.localStorage.setItem('selectedGymId', gym.id)
     state.user.selectedGym = gym
+    state.user.role = state.user.selectedGym.role
   },
 
+  // TODO : Wait backend to get the role ?
   [types.ADD_SELECT_GYM] (state, gym) {
     state.user.gyms.push(gym)
     window.localStorage.setItem('selectedGymId', gym.id)
     state.user.selectedGym = gym
+    state.user.role = state.user.selectedGym.role
   },
 
-  [types.LOG_OUT] (state, auth) {
-    // Logging out with Vue-auth
-    auth.logout({ redirect: '/' })
-
+  [types.LOG_OUT] (state) {
+    state.user.logged = false
+    state.sidebar.hidden = true
     // Then we clear the browser
     window.localStorage.clear()
     window.sessionStorage.clear()
@@ -104,6 +110,11 @@ const mutations = {
     for (let key in state.user) {
       state.user[key] = null
     }
+  },
+
+  [types.LOG_IN] (state) {
+    state.user.logged = true
+    state.sidebar.hidden = false
   }
 }
 

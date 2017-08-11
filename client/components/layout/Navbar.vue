@@ -38,7 +38,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         <div class="nav-right is-flex">
           <router-link v-if="!$auth.check()" to="/login" class="nav-item">Login</router-link>
           <router-link v-if="!$auth.check()" to="/register" class="nav-item">Register</router-link>
-          <a v-if="$auth.check()" @click="logout($auth)" class="nav-item">Logout</a>
+          <a v-if="$auth.check()" @click="logout" class="nav-item">Logout</a>
         </div>
       </nav>
     </div>
@@ -76,10 +76,12 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
     methods: {
       ...mapActions([
-        'toggleSidebar',
-        'logout'
+        'toggleSidebar'
       ]),
       selectGym () {
+      },
+      logout () {
+        this.$auth.logout({ redirect: '/' })
       }
     }
   }

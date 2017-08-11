@@ -33,7 +33,7 @@ const state = {
       name: 'Axios',
       path: '/axiosDemo',
       meta: {
-        auth: true,
+        auth: 'owner',
         icon: 'fa-rocket',
         link: 'axios/index.vue'
       },

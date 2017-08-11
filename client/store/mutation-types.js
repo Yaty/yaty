@@ -21,3 +21,5 @@ export const SELECT_GYM = 'SELECT_GYM'
 export const ADD_SELECT_GYM = 'ADD_SELECT_GYM'
 
 export const LOG_OUT = 'LOG_OUT'
+
+export const LOG_IN = 'LOG_IN'

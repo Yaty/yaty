@@ -7,7 +7,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 -->
 
 <template>
-  <footer class="footer">
+  <footer class="footer" :style="[hiddenSidebarStyle]">
     <div class="container">
       <div class="content has-text-centered">
         <p class="social">
@@ -35,10 +35,24 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
 
   data () {
     return this.$store.state.pkg
+  },
+
+  computed: {
+    ...mapGetters({
+      sidebar: 'sidebar',
+      user: 'user'
+    }),
+    hiddenSidebarStyle () {
+      if (!this.user.logged) return { 'margin-left': 0 }
+      if (this.sidebar.hidden) return { 'margin-left': 0 }
+      return null
+    }
   }
 
 }

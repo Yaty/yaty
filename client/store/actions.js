@@ -44,3 +44,7 @@ export const addAndSelectGym = ({ commit }, gym) => {
 export const logout = ({ commit }, auth) => {
   commit(types.LOG_OUT, auth)
 }
+
+export const login = ({ commit }, auth) => {
+  commit(types.LOG_IN, auth)
+}

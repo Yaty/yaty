@@ -23,10 +23,10 @@ Vue.router = router
 Vue.use(VueAxios, axios)
 Vue.use(VueAuth, {
   auth: {
-    request: function (req, token) {
+    request (req, token) {
       this.options.http._setHeaders.call(this, req, {Authorization: 'Bearer ' + token})
     },
-    response: function (res) {
+    response (res) {
       return res.data.token
     }
   },
@@ -36,7 +36,27 @@ Vue.use(VueAuth, {
   loginData: { url: process.env.BACKEND + 'auth/login', fetchUser: false },
   refreshData: { enabled: false },
   fetchData: { url: process.env.BACKEND + 'auth/user' },
-  rolesVar: 'role'
+  rolesVar: 'role',
+  // We are storing user data inside Vuex, Vue-auth will from now use Vuex
+  fetchProcess (res, data) {
+    console.log('fetch done')
+    this.watch.authenticated = true
+    store.dispatch('updateUser', this.options.parseUserData.call(this, this.options.http._httpData.call(this, res)))
+    this.watch.data = store.getters.user // dynamic
+    this.watch.loaded = true
+    if (data.success) data.success.call(this, res)
+  }
+})
+
+sync(store, router)
+const { state } = store
+
+router.beforeEach((route, redirect, next) => {
+  if (state.app.device.isMobile && state.app.sidebar.opened) {
+    store.commit(TOGGLE_SIDEBAR, false)
+  }
+
+  next()
 })
 
 Vue.use(NProgress)
@@ -57,33 +77,20 @@ const app = new Vue({
   nprogress,
   ...App,
   watch: {
-    // Binding Vue Auth user data to our store
-    '$auth.watch.data' (data) {
-      if (!data) return
-      this.$store.dispatch('updateUser', {
-        email: data.email,
-        name: data.name,
-        lastname: data.lastname,
-        gyms: data.gyms
-      })
+    '$auth.watch.authenticated' (authenticated) {
+      // Keep track of the authentication status
+      authenticated ? store.dispatch('login') : store.dispatch('logout')
     }
-  }
-})
-
-sync(store, router)
-const { state } = store
-
-router.beforeEach((route, redirect, next) => {
-  if (state.app.device.isMobile && state.app.sidebar.opened) {
-    store.commit(TOGGLE_SIDEBAR, false)
-  }
-
-  if (route.name === 'Login' && app.$auth.check()) {
-    next(false)
-  } else if (route.name === 'Register' && app.$auth.check()) {
-    next(false)
-  } else {
-    next()
+  },
+  mounted () {
+    // Update the store when the app is launched
+    if (this.$auth.check()) {
+      store.dispatch('login')
+      // Fetching user data at first launch
+      if (store.getters.user.logged) this.$auth.fetch()
+    } else {
+      store.dispatch('logout')
+    }
   }
 })
 

@@ -10,7 +10,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
   <div id="app">
     <nprogress-container></nprogress-container>
     <navbar :show="true"></navbar>
-    <sidebar :show="sidebar.opened && !sidebar.hidden"></sidebar>
+    <sidebar v-show="user.logged" :show="sidebar.opened && !sidebar.hidden"></sidebar>
     <app-main></app-main>
     <footer-bar></footer-bar>
   </div>
@@ -31,6 +31,7 @@ export default {
   },
 
   beforeMount () {
+    // Handle the sidebar
     const { body } = document
     const WIDTH = 768
     const RATIO = 3
@@ -40,9 +41,11 @@ export default {
         let rect = body.getBoundingClientRect()
         let isMobile = rect.width - RATIO < WIDTH
         this.toggleDevice(isMobile ? 'mobile' : 'other')
-        this.toggleSidebar({
-          opened: !isMobile
-        })
+        if (this.user.logged) {
+          this.toggleSidebar({
+            opened: !isMobile
+          })
+        }
       }
     }
 
@@ -51,14 +54,9 @@ export default {
     window.addEventListener('resize', handler)
   },
 
-  mounted () {
-    if (this.$auth.check()) {
-      this.$auth.fetch()
-    }
-  },
-
   computed: mapGetters({
-    sidebar: 'sidebar'
+    sidebar: 'sidebar',
+    user: 'user'
   }),
 
   methods: mapActions([

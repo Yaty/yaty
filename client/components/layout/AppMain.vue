@@ -28,10 +28,13 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters({
-      sidebar: 'sidebar'
+      sidebar: 'sidebar',
+      user: 'user'
     }),
     hiddenSidebarStyle () {
-      return this.sidebar.hidden ? { 'margin-left': 0 } : null
+      if (!this.user.logged) return { 'margin-left': 0 }
+      if (this.sidebar.hidden) return { 'margin-left': 0 }
+      return null
     }
   },
 

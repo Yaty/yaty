@@ -8,10 +8,20 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
 <template>
   <div>
-    403
+    You can't access {{ redirection }}. If you think it's an error please <a href="mailto:contact@hdaroit.fr">contact us</a>.
   </div>
 </template>
 
-<script></script>
+<script>
+  export default {
+    computed: {
+      redirection () {
+        const redirect = this.$auth.redirect()
+        if (redirect) return redirect.from.name
+        return 'this page'
+      }
+    }
+  }
+</script>
 
 <style scoped></style>

@@ -70,7 +70,8 @@ export default {
   },
 
   computed: mapGetters({
-    menu: 'menuitems'
+    menu: 'menuitems',
+    user: 'user'
   }),
 
   methods: {
