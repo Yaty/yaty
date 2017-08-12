@@ -70,6 +70,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         },
         set (gym) {
           this.$store.dispatch('selectGym', gym)
+          this.$router.push('/')
         }
       }
     },
@@ -78,8 +79,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       ...mapActions([
         'toggleSidebar'
       ]),
-      selectGym () {
-      },
       logout () {
         this.$auth.logout({ redirect: '/' })
       }
