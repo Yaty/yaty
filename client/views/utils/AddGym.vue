@@ -16,22 +16,21 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           </p>
         </header>
         <div class="card-content" v-if="gymsExists">
-          <div class="content">
-            <select v-on:change="selectGym" v-model="selectedGym" style="width: 95%">
-              <option v-for="gym in gyms" :value="gym">{{ gym }}</option>
-            </select>
-          </div>
-          <div class="content">
-            <button style="width: 95%" class="button is-success" v-on:click="join">Join !</button>
+          <div class="content has-text-centered">
+            <div class="select">
+              <select v-model="selectedGym">
+                <option v-for="gym in gyms" :value="gym">{{ gym.name }}</option>
+              </select>
+            </div>
           </div>
         </div>
         <div v-else class="card-content">
-          <p class="content">
-            There is no gym currently. See with your gym manager to create his.
+          <p class="content has-text-centered">
+            There is no gym currently or you already are a member in every gyms.
           </p>
         </div>
         <footer class="card-footer">
-          <a class="card-footer-item" v-if="gymsExists">Join</a>
+          <a class="card-footer-item" v-if="gymsExists" @click="join">Join</a>
           <router-link to="/create-gym" class="card-footer-item">Create your gym ?</router-link>
         </footer>
       </div>
@@ -41,6 +40,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
 <script>
   import { Collapse, Item as CollapseItem } from 'vue-bulma-collapse'
+  import { mapGetters } from 'vuex'
 
   export default {
     data () {
@@ -62,8 +62,28 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     },
     computed: {
       gymsExists () {
-        return Array.isArray(this.gyms) && this.gyms.length > 0
-      }
+        if (Array.isArray(this.gyms) && this.gyms.length > 0) {
+          // Removing gyms that the user already have joined
+          for (let i = 0; i < this.gyms.length; i++) {
+            let gymId = this.gyms[i].id
+            for (let j = 0; j < this.user.gyms.length; j++) {
+              if (gymId === this.user.gyms[j].id) {
+                this.gyms.splice(i, 1)
+                i--
+              }
+            }
+          }
+
+          if (this.gyms.length > 0) {
+            this.selectedGym = this.gyms[0]
+            return true
+          }
+        }
+        return false
+      },
+      ...mapGetters({
+        user: 'user'
+      })
     },
     components: {
       Collapse,
@@ -79,7 +99,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         .catch(e => {
           console.log('get gyms error', e)
           this.gymsLoading = false
-          this.$notify({
+          this.$notify({ // should we use notification from bulma ?
             type: 'error',
             title: 'error',
             text: 'Unable to fetch gyms.'
@@ -87,21 +107,18 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         })
     },
     methods: {
-      selectGym () {
-        this.$store.dispatch('addAndSelectGym', this.selectedGym)
-        this.axios.post(process.env.BACKEND + 'users/gym', { email: this.$store.getters.user.email, gym: this.selectedGym })
-      },
       join () {
+        this.axios.post(process.env.BACKEND + 'users/gym', { email: this.$store.getters.user.email, gymId: this.selectedGym.id })
+          .then(res => {
+            this.$store.dispatch('updateGyms', res.data.gyms)
+          })
+          .catch(e => {
+            console.log('error while joining a gym', e)
+          })
       }
     }
   }
 </script>
 
 <style scoped>
-  select {
-    height: 100%;
-    text-align-last: center;
-    text-align:center;
-    width: 25%;
-  }
 </style>

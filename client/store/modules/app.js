@@ -31,6 +31,24 @@ const state = {
   }
 }
 
+const updateGyms = () => {
+  const selectedGymId = window.localStorage.getItem('selectedGymId')
+  if (selectedGymId && state.user.gyms) {
+    for (let gym of state.user.gyms) {
+      if (String(gym.id) === String(selectedGymId)) {
+        state.user.selectedGym = gym
+        state.user.role = state.user.selectedGym.role
+        return
+      }
+    }
+  }
+
+  // If the gym wasn't found we select the first gym (or null)
+  state.user.selectedGym = state.user.gyms && state.user.gyms.length > 0 && state.user.gyms[0] ? state.user.gyms[0] : null
+  state.user.role = state.user.selectedGym.role
+  if (state.user.selectedGym) window.localStorage.setItem('selectedGymId', state.user.selectedGym.id)
+}
+
 const mutations = {
   [types.TOGGLE_DEVICE] (state, device) {
     state.device.isMobile = device === 'mobile'
@@ -55,37 +73,20 @@ const mutations = {
     }
   },
 
+  [types.UPDATE_GYMS] (state, gyms) {
+    state.user.gyms = gyms
+    updateGyms()
+  },
+
   [types.UPDATE_USER] (state, user) {
     state.user.email = user.email
     state.user.name = user.name
     state.user.lastname = user.lastname
     state.user.gyms = user.gyms
-    const selectedGymId = window.localStorage.getItem('selectedGymId')
-    if (selectedGymId && state.user.gyms) {
-      for (let gym of state.user.gyms) {
-        if (String(gym.id) === String(selectedGymId)) {
-          state.user.selectedGym = gym
-          state.user.role = state.user.selectedGym.role
-          return
-        }
-      }
-    }
-
-    // If the gym wasn't found we select the first gym (or null)
-    state.user.selectedGym = state.user.gyms && state.user.gyms.length > 0 && state.user.gyms[0] ? state.user.gyms[0] : null
-    state.user.role = state.user.selectedGym.role
-    if (state.user.selectedGym) window.localStorage.setItem('selectedGymId', state.user.selectedGym.id)
+    updateGyms()
   },
 
   [types.SELECT_GYM] (state, gym) {
-    window.localStorage.setItem('selectedGymId', gym.id)
-    state.user.selectedGym = gym
-    state.user.role = state.user.selectedGym.role
-  },
-
-  // TODO : Wait backend to get the role ?
-  [types.ADD_SELECT_GYM] (state, gym) {
-    state.user.gyms.push(gym)
     window.localStorage.setItem('selectedGymId', gym.id)
     state.user.selectedGym = gym
     state.user.role = state.user.selectedGym.role

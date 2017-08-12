@@ -10,21 +10,27 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
   <section class="hero is-bold app-navbar animated" :class="{ slideInDown: show, slideOutDown: !show }">
     <div class="hero-head">
       <nav class="nav">
+
         <div class="nav-left">
           <a class="nav-item is-hidden-tablet" @click="toggleSidebar({opened: !sidebar.opened})">
             <i class="fa fa-bars" aria-hidden="true" v-show="!sidebar.hidden"></i>
           </a>
-          <p class="control nav-item">
-            <span class="select" v-if="$auth.check() && user.gyms && user.gyms.length > 0">
-              <select v-model="selectedGym">
+
+          <div class="nav-item">
+            <div class="select">
+              <select v-model="selectedGym" v-if="$auth.check() && user.gyms && user.gyms.length > 0">
                 <option v-for="gym in user.gyms" :value="gym">{{ gym.name }}</option>
               </select>
-            </span>
-            <span v-else-if="$auth.check()">
-              <router-link to="/add-gym" class="button is-success is-outlined">Join or create a gym</router-link>
-            </span>
-          </p>
+            </div>
+          </div>
+
+          <div class="nav-item">
+            <router-link v-if="$auth.check()" to="/add-gym" class="button is-success is-outlined" title="Add a gym !">
+              <i class="fa fa-plus"></i>
+            </router-link>
+          </div>
         </div>
+
         <div class="nav-center">
           <router-link class="nav-item hero-brand" to="/">
             <img src="~assets/logo.svg" :alt="pkginfo.description">

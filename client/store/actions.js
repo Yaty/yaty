@@ -37,14 +37,14 @@ export const selectGym = ({ commit }, gym) => {
   commit(types.SELECT_GYM, gym)
 }
 
-export const addAndSelectGym = ({ commit }, gym) => {
-  commit(types.ADD_SELECT_GYM, gym)
-}
-
 export const logout = ({ commit }, auth) => {
   commit(types.LOG_OUT, auth)
 }
 
 export const login = ({ commit }, auth) => {
   commit(types.LOG_IN, auth)
+}
+
+export const updateGyms = ({ commit }, gyms) => {
+  commit(types.UPDATE_GYMS, gyms)
 }

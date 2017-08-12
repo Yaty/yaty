@@ -39,7 +39,6 @@ Vue.use(VueAuth, {
   rolesVar: 'role',
   // We are storing user data inside Vuex, Vue-auth will from now use Vuex
   fetchProcess (res, data) {
-    console.log('fetch done')
     this.watch.authenticated = true
     store.dispatch('updateUser', this.options.parseUserData.call(this, this.options.http._httpData.call(this, res)))
     this.watch.data = store.getters.user // dynamic
