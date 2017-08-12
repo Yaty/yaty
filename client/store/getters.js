@@ -25,6 +25,8 @@ const menuitems = state => {
         menuItems.push(menuItem)
       } else if (typeof meta.auth === 'boolean' && userLogged === meta.auth) { // Auth checking
         menuItems.push(menuItem)
+      } else {
+        menuItems.push(null) // We are pushing a null to not change the index of the item between vuex and the sidebar, the sidebar will ignore this
       }
     } else {
       menuItems.push(menuItem)

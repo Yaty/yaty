@@ -12,7 +12,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       General
     </p>
     <ul class="menu-list">
-      <li v-for="(item, index) in menu">
+      <li v-for="(item, index) in menu" v-if="item">
         <router-link :to="item.path" :exact="true" :aria-expanded="isExpanded(item) ? 'true' : 'false'" v-if="item.path" @click.native="toggle(index, item)">
           <span class="icon is-small"><i :class="['fa', item.meta.icon]"></i></span>
           {{ item.meta.label || item.name }}
@@ -119,6 +119,7 @@ export default {
       const menu = this.menu
       for (let i = 0, l = menu.length; i < l; i++) {
         const item = menu[i]
+        if (!item) continue
         const k = item.children && item.children.length
         if (k) {
           for (let j = 0; j < k; j++) {
