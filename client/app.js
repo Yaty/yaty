@@ -16,7 +16,6 @@ import { sync } from 'vuex-router-sync'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import * as filters from './filters'
 import { TOGGLE_SIDEBAR } from 'vuex-store/mutation-types'
 
 Vue.router = router
@@ -58,10 +57,6 @@ router.beforeEach((route, redirect, next) => {
 })
 
 const nprogress = new NProgress({ parent: '.nprogress-container' })
-
-Object.keys(filters).forEach(key => {
-  Vue.filter(key, filters[key])
-})
 
 const app = new Vue({
   router,
