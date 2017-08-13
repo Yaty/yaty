@@ -12,7 +12,7 @@ import charts from './charts'
 import uifeatures from './uifeatures'
 import components from './components'
 import tables from './tables'
-import managerStats from './manager/stats'
+import managerMenus from './manager'
 
 // show: meta.label -> name
 // name: component name
@@ -39,7 +39,7 @@ const state = {
       },
       component: lazyLoading('axios', true)
     },
-    managerStats,
+    ...Object.values(managerMenus),
     charts,
     uifeatures,
     components,

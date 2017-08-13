@@ -9,21 +9,28 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 import lazyLoading from '../lazyLoading'
 
 export default {
-  name: 'Manager Stats',
-  path: '/manager-stats',
+  path: '/members',
   meta: {
-    icon: 'fa-bar-chart-o',
+    icon: 'fa-users',
     expanded: false,
+    label: 'Members',
     auth: 'owner'
   },
-  component: lazyLoading('stats/manager', true),
+  component: lazyLoading('owners/management', true),
 
   children: [
     {
-      name: 'Stats',
-      path: 'members',
-      component: lazyLoading('stats/manager/Members'),
-      meta: {}
+      name: 'Members',
+      path: '',
+      component: lazyLoading('owners/management/List')
+    },
+    {
+      name: 'Add members',
+      path: 'add',
+      component: lazyLoading('owners/management/Add'),
+      meta: {
+        label: 'Add'
+      }
     }
   ]
 }
