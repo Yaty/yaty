@@ -8,10 +8,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
 import * as types from '../../mutation-types'
 import lazyLoading from './lazyLoading'
-import charts from './charts'
-import uifeatures from './uifeatures'
-import components from './components'
-import tables from './tables'
 import managerMenus from './manager'
 
 // show: meta.label -> name
@@ -29,21 +25,7 @@ const state = {
       },
       component: lazyLoading('dashboard', true)
     },
-    {
-      name: 'Axios',
-      path: '/axiosDemo',
-      meta: {
-        auth: 'owner',
-        icon: 'fa-rocket',
-        link: 'axios/index.vue'
-      },
-      component: lazyLoading('axios', true)
-    },
-    ...Object.values(managerMenus),
-    charts,
-    uifeatures,
-    components,
-    tables
+    ...Object.values(managerMenus)
   ]
 }
 
