@@ -22,20 +22,13 @@ import { TOGGLE_SIDEBAR } from 'vuex-store/mutation-types'
 Vue.router = router
 Vue.use(VueAxios, axios)
 Vue.use(VueAuth, {
-  auth: {
-    request (req, token) {
-      this.options.http._setHeaders.call(this, req, {Authorization: 'Bearer ' + token})
-    },
-    response (res) {
-      return res.data.token
-    }
-  },
+  auth: require('@websanova/vue-auth/drivers/auth/bearer'),
   http: require('@websanova/vue-auth/drivers/http/axios.1.x'),
   router: require('@websanova/vue-auth/drivers/router/vue-router.2.x'),
   registerData: { url: process.env.BACKEND + 'auth/register' },
-  loginData: { url: process.env.BACKEND + 'auth/login', fetchUser: false },
+  loginData: { url: process.env.BACKEND + 'auth/login', fetchUser: true },
   refreshData: { enabled: false },
-  fetchData: { url: process.env.BACKEND + 'auth/user' },
+  fetchData: { url: process.env.BACKEND + 'auth/user', enabled: true },
   rolesVar: 'role',
   // We are storing user data inside Vuex, Vue-auth will from now use Vuex
   fetchProcess (res, data) {
@@ -47,6 +40,12 @@ Vue.use(VueAuth, {
   }
 })
 
+Vue.use(NProgress)
+Vue.use(Notifications)
+
+// Enable devtools
+Vue.config.devtools = true
+
 sync(store, router)
 const { state } = store
 
@@ -57,12 +56,6 @@ router.beforeEach((route, redirect, next) => {
 
   next()
 })
-
-Vue.use(NProgress)
-Vue.use(Notifications)
-
-// Enable devtools
-Vue.config.devtools = true
 
 const nprogress = new NProgress({ parent: '.nprogress-container' })
 
@@ -79,16 +72,6 @@ const app = new Vue({
     '$auth.watch.authenticated' (authenticated) {
       // Keep track of the authentication status
       authenticated ? store.dispatch('login') : store.dispatch('logout')
-    }
-  },
-  mounted () {
-    // Update the store when the app is launched
-    if (this.$auth.check()) {
-      store.dispatch('login')
-      // Fetching user data at first launch
-      if (store.getters.user.logged) this.$auth.fetch()
-    } else {
-      store.dispatch('logout')
     }
   }
 })
