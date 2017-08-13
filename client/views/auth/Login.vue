@@ -80,9 +80,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           data: this.data.body,
           rememberMe: this.data.rememberMe,
           redirect: {name: redirect ? redirect.from.name : 'Home'},
-          success () {
-            this.$auth.fetch()
-          },
           error (err) {
             if (err.response) {
               // The request was made, but the server responded with a status code
