@@ -17,19 +17,23 @@ export default {
     auth: 'owner'
   },
   component: lazyLoading('owners/management', true),
+  redirect: 'members/list',
 
   children: [
     {
-      name: 'Members',
-      path: '',
-      component: lazyLoading('owners/management/List')
+      name: 'List members',
+      path: 'list',
+      component: lazyLoading('owners/management/List'),
+      meta: {
+        label: 'List members'
+      }
     },
     {
       name: 'Add members',
       path: 'add',
       component: lazyLoading('owners/management/Add'),
       meta: {
-        label: 'Add'
+        label: 'Add members'
       }
     }
   ]
