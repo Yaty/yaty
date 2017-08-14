@@ -19,7 +19,10 @@ export default new Router({
     {
       name: 'Home',
       path: '/',
-      component: require('../views/Home')
+      component: require('../views/Home'),
+      meta: {
+        auth: true
+      }
     },
     {
       name: 'Login',

@@ -7,8 +7,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 */
 
 import * as types from '../../mutation-types'
-import lazyLoading from './lazyLoading'
 import managerMenus from './manager'
+import lazyLoading from './lazyLoading'
 
 // show: meta.label -> name
 // name: component name
@@ -17,13 +17,13 @@ import managerMenus from './manager'
 const state = {
   items: [
     {
-      name: 'Dashboard',
-      path: '/dashboard',
+      path: '/',
       meta: {
-        icon: 'fa-tachometer',
-        link: 'dashboard/index.vue'
+        icon: 'fa-home',
+        label: 'Home',
+        auth: true
       },
-      component: lazyLoading('dashboard', true)
+      component: lazyLoading('Home')
     },
     ...Object.values(managerMenus)
   ]
