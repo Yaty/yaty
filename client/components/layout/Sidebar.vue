@@ -43,7 +43,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 </template>
 
 <script>
-import Expanding from 'vue-bulma-expanding'
+import Expanding from '../../views/components/Expanding'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {

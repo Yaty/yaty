@@ -14,33 +14,22 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           <strong>{{ name }}</strong>
         </h3>
       </div>
-      <div class="level-item" v-if="!!codelink">
-        <tooltip label="View code" placement="right" size="small" :rounded="true">
-          <span class="icon">
-            <a  :href="codelink">
-              <i class="fa fa-github"></i>
-            </a>
-          </span>
-        </tooltip>
-      </div>
     </div>
 
     <div class="level-right is-hidden-mobile">
-      <breadcrumb :list="list"></breadcrumb>
+      <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
+        <ul>
+          <li v-for="(item, index) in list" :class="index === list.length - 1 ? 'is-active' : ''">
+            <router-link :to="item.path">{{ item.name }}</router-link>
+          </li>
+        </ul>
+      </nav>
     </div>
   </nav>
 </template>
 
 <script>
-import Breadcrumb from 'vue-bulma-breadcrumb'
-import Tooltip from 'vue-bulma-tooltip'
-
 export default {
-  components: {
-    Breadcrumb,
-    Tooltip
-  },
-
   data () {
     return {
       list: null
@@ -52,13 +41,6 @@ export default {
   },
 
   computed: {
-    codelink () {
-      if (this.$route.meta && this.$route.meta.link) {
-        return 'https://github.com/vue-bulma/vue-admin/blob/master/client/views/' + this.$route.meta.link
-      } else {
-        return null
-      }
-    },
     name () {
       return this.$route.name
     }

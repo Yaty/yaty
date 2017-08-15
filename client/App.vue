@@ -67,43 +67,77 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~animate.css';
-.animated {
-  animation-duration: .377s;
-}
+  // Import Bulma's core
+  @import "~bulma/sass/utilities/_all";
 
-@import '~bulma';
+  // Set your colors
+  $primary: #23d160;
+  $primary-invert: findColorInvert($primary);
+  $success: $primary;
+  $success-invert: $primary-invert;
+  $black: #4a4a4a;
+  $white: findColorInvert($black);
 
-@import '~wysiwyg.css/wysiwyg.sass';
+  // Setup $colors to use as bulma classes (e.g. 'is-twitter')
+  $colors: (
+    "white": ($white, $black),
+    "black": ($black, $white),
+    "primary": ($primary, $primary-invert),
+    "success": ($success, $success-invert),
+    "light": ($light, $light-invert),
+    "dark": ($dark, $dark-invert),
+    "info": ($info, $info-invert),
+    "warning": ($warning, $warning-invert),
+    "danger": ($danger, $danger-invert)
+  );
 
-$fa-font-path: '~font-awesome/fonts/';
-@import '~font-awesome/scss/font-awesome';
+  // Links
+  $link: $primary;
+  $link-invert: $primary-invert;
+  $link-focus-border: $primary;
 
-html {
-  background-color: whitesmoke;
-}
+  // Panel
+  $panel-heading-background-color: white;
 
-.nprogress-container {
-  position: fixed !important;
-  width: 100%;
-  height: 50px;
-  z-index: 2048;
-  pointer-events: none;
+  // Import Bulma and Buefy styles
+  @import "~bulma";
+  @import "~buefy/src/scss/buefy";
 
-  #nprogress {
-    $color: #48e79a;
+  @import '~animate.css';
+  .animated {
+    animation-duration: .377s;
+  }
 
-    .bar {
-      background: $color;
-    }
-    .peg {
-      box-shadow: 0 0 10px $color, 0 0 5px $color;
-    }
+  @import '~wysiwyg.css/wysiwyg.sass';
 
-    .spinner-icon {
-      border-top-color: $color;
-      border-left-color: $color;
+  $fa-font-path: '~font-awesome/fonts/';
+  @import '~font-awesome/scss/font-awesome';
+
+  html {
+    background-color: whitesmoke;
+  }
+
+  .nprogress-container {
+    position: fixed !important;
+    width: 100%;
+    height: 50px;
+    z-index: 2048;
+    pointer-events: none;
+
+    #nprogress {
+      $color: #48e79a;
+
+      .bar {
+        background: $color;
+      }
+      .peg {
+        box-shadow: 0 0 10px $color, 0 0 5px $color;
+      }
+
+      .spinner-icon {
+        border-top-color: $color;
+        border-left-color: $color;
+      }
     }
   }
-}
 </style>

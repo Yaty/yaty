@@ -11,39 +11,50 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     <div class="tile is-parent">
       <div class="tile is-child box">
         <p class="title">{{ user.selectedGym.name }}</p>
-        <div class="content is-loading">
-          <div v-if="error">Error while fetching members : {{ error }}</div>
-          <table class="table is-bordered is-striped is-narrow is-fullwidth" v-if="members && members.length > 0 && !error">
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Last Name</th>
-                <th>Last Login</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tfoot>
-            <tr>
-              <th>Email</th>
-              <th>Name</th>
-              <th>Last Name</th>
-              <th>Last Login</th>
-              <th>Actions</th>
-            </tr>
-            </tfoot>
-            <tbody>
-              <tr v-for="member in members">
-                <td>{{ member.email }}</td>
-                <td>{{ member.name }}</td>
-                <td>{{ member.lastname }}</td>
-                <td>{{ member.lastLogin | ISOToHumanDate }}</td>
-                <td>Actions here</td>
-              </tr>
-            </tbody>
-          </table>
-          <span v-else-if="!error">There is no members in this gym. Add members <router-link to="/members/add">here</router-link>.</span>
-        </div>
+        <b-table
+          :data="members"
+          striped
+          narrowed
+          :loading="isLoading"
+          mobile-cards
+          paginated
+          per-page="15"
+          detailed
+        >
+          <template scope="props">
+            <b-table-column field="email" label="E-mail" sortable>
+              {{ props.row.email }}
+            </b-table-column>
+
+            <b-table-column field="name" label="First Name" sortable>
+              {{ props.row.name }}
+            </b-table-column>
+
+            <b-table-column field="lastname" label="Last Name" sortable>
+              {{ props.row.lastname }}
+            </b-table-column>
+
+            <b-table-column field="lastLogin" label="Last connection" sortable centered>
+              <span class="tag is-success">
+                  {{ props.row.lastLogin ? new Date(props.row.lastLogin).toLocaleDateString() : 'Never' }}
+              </span>
+            </b-table-column>
+          </template>
+
+          <template slot="detail" scope="props">
+            <div class="content">
+              <p>
+                <strong>{{ props.row.name }} {{ props.row.lastname }}</strong>
+                <br>
+                Actions ici
+              </p>
+            </div>
+          </template>
+
+          <div slot="empty" class="has-text-centered">
+            There is currently no members to display.
+          </div>
+        </b-table>
       </div>
     </div>
   </div>
@@ -56,8 +67,9 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
   export default {
     data () {
       return {
-        members: null,
-        error: null
+        members: [],
+        error: null,
+        isLoading: null
       }
     },
     filters: {
@@ -67,17 +79,19 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       user: 'user'
     }),
     mounted () {
+      this.isLoading = true
       this.axios.get(process.env.BACKEND + 'gyms/members', {
         params: {
-          email: this.user.email,
           gym: this.user.selectedGym.id
         }
       })
       .then(res => {
         this.members = res.data.members
+        this.isLoading = false
       })
       .catch(e => {
         this.error = e.response.statusText
+        this.isLoading = false
       })
     }
   }

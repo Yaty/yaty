@@ -39,7 +39,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 </template>
 
 <script>
-  import { Collapse, Item as CollapseItem } from 'vue-bulma-collapse'
   import { mapGetters } from 'vuex'
 
   export default {
@@ -84,10 +83,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       ...mapGetters({
         user: 'user'
       })
-    },
-    components: {
-      Collapse,
-      CollapseItem
     },
     mounted () {
       this.gymsLoading = true

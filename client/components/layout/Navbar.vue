@@ -25,7 +25,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           </div>
 
           <div class="nav-item">
-            <router-link v-if="$auth.check()" to="/add-gym" class="button is-success is-outlined" title="Add a gym !">
+            <router-link v-if="$auth.check()" to="/add-gym" class="button is-primary is-outlined" title="Add a gym !">
               <i class="fa fa-plus"></i>
             </router-link>
           </div>
@@ -34,11 +34,11 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         <div class="nav-center">
           <router-link class="nav-item hero-brand" to="/">
             <img src="~assets/logo.svg" :alt="pkginfo.description">
-            <tooltip :label="'v' + pkginfo.version" placement="right" type="success" size="small" :no-animate="true" :always="true" :rounded="true">
-              <div class="is-hidden-mobile">
+            <div class="is-hidden-mobile">
+              <b-tooltip :label="'v' + pkginfo.version" position="is-right" always size="is-large">
                 <span class="vue">Yaty</span><strong class="admin">Admin</strong>
-              </div>
-            </tooltip>
+              </b-tooltip>
+            </div>
           </router-link>
         </div>
         <div class="nav-right is-flex">
@@ -52,14 +52,9 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 </template>
 
 <script>
-  import Tooltip from 'vue-bulma-tooltip'
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
-    components: {
-      Tooltip
-    },
-
     props: {
       show: Boolean
     },
@@ -100,6 +95,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     min-width: 100%;
     z-index: 1024;
     box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
+    background-color: white;
 
     .container {
       margin: auto 10px;

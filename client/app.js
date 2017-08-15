@@ -12,12 +12,16 @@ import VueAxios from 'vue-axios'
 import VueAuth from '@websanova/vue-auth'
 import NProgress from 'vue-nprogress'
 import Notifications from 'vue-notification'
+import Buefy from 'buefy'
 import { sync } from 'vuex-router-sync'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import { TOGGLE_SIDEBAR } from 'vuex-store/mutation-types'
 
+Vue.use(Buefy, {
+  defaultIconPack: 'fa'
+})
 Vue.router = router
 Vue.use(VueAxios, axios)
 Vue.use(VueAuth, {
