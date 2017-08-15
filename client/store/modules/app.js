@@ -89,7 +89,7 @@ const mutations = {
   [types.SELECT_GYM] (state, gym) {
     window.localStorage.setItem('selectedGymId', gym.id)
     state.user.selectedGym = gym
-    state.user.role = state.user.selectedGym.role
+    state.user.role = state.user.selectedGym ? state.user.selectedGym.role : null
   },
 
   [types.LOG_OUT] (state) {
