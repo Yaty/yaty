@@ -96,9 +96,6 @@ export default {
   $link-invert: $primary-invert;
   $link-focus-border: $primary;
 
-  // Panel
-  $panel-heading-background-color: white;
-
   // Import Bulma and Buefy styles
   @import "~bulma";
   @import "~buefy/src/scss/buefy";

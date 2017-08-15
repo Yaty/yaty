@@ -16,12 +16,17 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           </p>
         </header>
         <div class="card-content" v-if="gymsExists">
-          <div class="content has-text-centered">
-            <div class="select">
-              <select v-model="selectedGym">
-                <option v-for="gym in gyms" :value="gym">{{ gym.name }}</option>
-              </select>
-            </div>
+          <div class="content">
+            <b-field>
+              <b-select v-model="selectedGym" placeholder="Select a gym">
+                <option
+                  v-for="gym in gyms"
+                  :value="gym"
+                  :key="gym.id">
+                  {{ gym.name }}
+                </option>
+              </b-select>
+            </b-field>
           </div>
         </div>
         <div v-else class="card-content">
@@ -39,6 +44,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 </template>
 
 <script>
+  // TODO : Center
   import { mapGetters } from 'vuex'
 
   export default {

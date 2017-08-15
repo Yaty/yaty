@@ -15,29 +15,25 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         <div class="box">
           <div v-show="error" style="color:red; word-wrap:break-word;">{{ error }}</div>
           <form v-on:submit.prevent="register">
-            <label class="label">Name</label>
-            <p class="control">
-              <input v-model="data.body.name" class="input" type="text" placeholder="Adam">
-            </p>
-            <label class="label">Last name</label>
-            <p class="control">
-              <input v-model="data.body.lastname" class="input" type="text" placeholder="Ondra">
-            </p>
-            <label class="label">Email</label>
-            <p class="control">
-              <input v-model="data.body.email" class="input" type="text" placeholder="email@example.org">
-            </p>
-            <label class="label">Password</label>
-            <p class="control">
-              <input v-model="data.body.password" class="input" type="password" placeholder="password">
-            </p>
+            <b-field label="Name">
+              <b-input type="text" placeholder="Adam" v-model="data.body.name"></b-input>
+            </b-field>
 
-            <p class="control">
-              <label class="checkbox">
-                <input type="checkbox" v-model="data.rememberMe">
-                Remember me
-              </label>
-            </p>
+            <b-field label="Lastname">
+              <b-input type="text" placeholder="Ondra" v-model="data.body.lastname"></b-input>
+            </b-field>
+
+            <b-field label="Email" :type="emailValidator" :message="emailMsg">
+              <b-input type="email" placeholder="email@email.com" v-model="data.body.email"></b-input>
+            </b-field>
+
+            <b-field label="Password" :type="passwordValidator" :message="passwordMsg">
+              <b-input type="password" v-model="data.body.password" placeholder="Password"></b-input>
+            </b-field>
+
+            <div class="field">
+              <b-checkbox v-model="data.rememberMe">Remember me</b-checkbox>
+            </div>
 
             <hr>
             <p class="control level level-left">
@@ -65,7 +61,19 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           },
           rememberMe: false
         },
-        error: null
+        error: null,
+        passwordMsg: null,
+        emailMsg: null
+      }
+    },
+    computed: {
+      passwordValidator () {
+        // TODO : Password validation here return 'is-danger' when bad, use Vuelidate ?
+        return 'is-success'
+      },
+      emailValidator () {
+        // TODO : Email validation here return 'is-danger' when bad, use Vuelidate ?
+        return 'is-success'
       }
     },
     methods: {

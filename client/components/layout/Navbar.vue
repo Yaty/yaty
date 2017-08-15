@@ -17,11 +17,16 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           </a>
 
           <div class="nav-item">
-            <div class="select">
-              <select v-model="selectedGym" v-if="$auth.check() && user.gyms && user.gyms.length > 0">
-                <option v-for="gym in user.gyms" :value="gym">{{ gym.name }}</option>
-              </select>
-            </div>
+            <b-field>
+              <b-select v-model="selectedGym" v-if="$auth.check() && user.gyms && user.gyms.length > 0" placeholder="Select a gym">
+                <option
+                  v-for="gym in user.gyms"
+                  :value="gym"
+                  :key="gym.id">
+                  {{ gym.name }}
+                </option>
+              </b-select>
+            </b-field>
           </div>
 
           <div class="nav-item">
