@@ -11,6 +11,23 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     <div class="tile is-parent">
       <div class="tile is-child box">
         <p class="title">{{ user.selectedGym.name }}</p>
+        <div class="columns is-centered">
+          <div class="column is-half is-narrow">
+            <b-field>
+              <b-autocomplete
+                icon="search"
+                placeholder="Search a member"
+                :data="searchResult"
+                field="toString"
+                @input="searchMember">
+              </b-autocomplete>
+            </b-field>
+          </div>
+          <div class="column is-narrow">
+              <button class="button is-primary" @click="reset">Reset</button>
+          </div>
+        </div>
+
         <b-table
           :data="members"
           striped
@@ -63,13 +80,18 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 <script>
   import { mapGetters } from 'vuex'
   import filters from '../../../filters'
+  import BAutocomplete from '../../../../node_modules/buefy/src/components/autocomplete/Autocomplete.vue'
 
   export default {
+    components: {BAutocomplete},
     data () {
       return {
         members: [],
+        membersCopy: null,
         error: null,
-        isLoading: null
+        isLoading: null,
+        searchResult: [],
+        searchFunction: null
       }
     },
     filters: {
@@ -78,6 +100,40 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     computed: mapGetters({
       user: 'user'
     }),
+    methods: {
+      searchMember (memberProp) {
+        clearTimeout(this.searchFunction)
+        if (memberProp) {
+          this.searchFunction = setTimeout(() => {
+            const addMember = (m) => {
+              for (let i = 0; i < this.searchResult.length; i++) {
+                if (this.searchResult[i].email === m.email) continue // already added
+                // TODO : check if he is not already in there
+              }
+            }
+
+            // Searching in name
+            for (let i = 0; i < this.members.length; i++) {
+              let member = this.members[i]
+              // Searching in name
+              if (member.name.includes(memberProp)) {
+                addMember(member)
+              }
+              // Lastname
+
+              // Email
+
+              // Date
+            }
+          }, 500)
+        } else {
+          this.reset()
+        }
+      },
+      reset () {
+        this.members = this.membersCopy
+      }
+    },
     mounted () {
       this.isLoading = true
       this.axios.get(process.env.BACKEND + 'gyms/members', {
@@ -87,6 +143,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       })
       .then(res => {
         this.members = res.data.members
+        this.membersCopy = JSON.parse(JSON.stringify(this.members))
         this.isLoading = false
       })
       .catch(e => {
