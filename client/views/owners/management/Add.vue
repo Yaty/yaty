@@ -9,22 +9,24 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 <template>
   <div class="columns is-multiline is-centered">
     <div class="column is-full" v-if="error">{{ error }}</div>
-    <b-panel collapsible v-for="member in members" :key="member.id" class="column is-one-quarter" :open="false" :header="getMemberName(member)">
-      <div class="content">
-        <label class="label">Email</label>
-        <p class="control">
-          <input v-model="member.email" class="input" type="text" placeholder="email@example.org">
-        </p>
+    <b-panel hasCustomTemplate collapsible v-for="member in members" :key="member.id" class="column is-one-quarter" :open="false" :header="getMemberName(member)">
+      <div class="panel-block has-text-centered">
+        <div class="content">
+          <label class="label">Email</label>
+          <p class="control">
+            <input v-model="member.email" class="input" type="text" placeholder="email@example.org">
+          </p>
 
-        <label class="label">Name</label>
-        <p class="control">
-          <input v-model="member.name" class="input" type="text" placeholder="Name">
-        </p>
+          <label class="label">Name</label>
+          <p class="control">
+            <input v-model="member.name" class="input" type="text" placeholder="Name">
+          </p>
 
-        <label class="label">Last name</label>
-        <p class="control">
-          <input v-model="member.lastname" class="input" type="text" placeholder="Lastname">
-        </p>
+          <label class="label">Last name</label>
+          <p class="control">
+            <input v-model="member.lastname" class="input" type="text" placeholder="Lastname">
+          </p>
+        </div>
       </div>
     </b-panel>
     <div class="column has-text-centered is-full">
@@ -112,4 +114,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 </script>
 
 <style scoped>
+  .content {
+    width: 100%;
+  }
 </style>
