@@ -40,8 +40,9 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           :loading="isLoading"
           mobile-cards
           paginated
-          per-page="15"
+          per-page="20"
           detailed
+          id="membersTable"
         >
           <template scope="props">
             <b-table-column field="email" label="E-mail" sortable centered>
@@ -134,7 +135,21 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
               // Searching by props
               memberProps.forEach(prop => member[prop] && member[prop].includes(memberPropQuery) ? addMember(member) : '')
               // Searching by `${m.name} ${m.lastname} [${m.email}]`
-              if (memberToString(member) === memberPropQuery) addMember(member)
+              if (memberToString(member) === memberPropQuery) {
+                addMember(member)
+              }
+            }
+
+            // In that case we open the details box
+            if (this.searchResult.length === 1) {
+              let membersTable = document.getElementById('membersTable')
+              if (membersTable) {
+                let aEls = membersTable.getElementsByTagName('a')
+                if (aEls && aEls.length > 0) {
+                  let button = aEls[0]
+                  if (button) button.click()
+                }
+              }
             }
 
             this.searchLoading = false
