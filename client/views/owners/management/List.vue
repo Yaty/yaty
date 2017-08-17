@@ -15,11 +15,16 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           <div class="column is-half is-narrow">
             <b-field>
               <b-autocomplete
+                v-model="searchValue"
                 icon="search"
                 placeholder="Search a member"
+                max-results="50"
+                :loading="searchLoading"
                 :data="searchResult"
                 field="toString"
-                @input="searchMember">
+                icon-pack="fa"
+                @input="searchMember"
+              >
               </b-autocomplete>
             </b-field>
           </div>
@@ -29,7 +34,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         </div>
 
         <b-table
-          :data="members"
+          :data="searchResult.length > 0 ? searchResult : members"
           striped
           narrowed
           :loading="isLoading"
@@ -80,18 +85,17 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 <script>
   import { mapGetters } from 'vuex'
   import filters from '../../../filters'
-  import BAutocomplete from '../../../../node_modules/buefy/src/components/autocomplete/Autocomplete.vue'
 
   export default {
-    components: {BAutocomplete},
     data () {
       return {
         members: [],
-        membersCopy: null,
         error: null,
         isLoading: null,
         searchResult: [],
-        searchFunction: null
+        searchFunction: null,
+        searchLoading: null,
+        searchValue: ''
       }
     },
     filters: {
@@ -101,37 +105,53 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       user: 'user'
     }),
     methods: {
-      searchMember (memberProp) {
+      searchMember (memberPropQuery) {
         clearTimeout(this.searchFunction)
-        if (memberProp) {
+        if (memberPropQuery) {
+          this.searchLoading = true
           this.searchFunction = setTimeout(() => {
+            // Add a member in the result array if he is not in here
+            const memberToString = (m) => `${m.name} ${m.lastname} [${m.email}]`
+
             const addMember = (m) => {
+              if (!m.email) return
               for (let i = 0; i < this.searchResult.length; i++) {
-                if (this.searchResult[i].email === m.email) continue // already added
-                // TODO : check if he is not already in there
+                if (this.searchResult[i].email === m.email) return // already added
               }
+
+              // If we are here the member is not in the search result, we can add it
+              m.toString = memberToString(m) // Will be displayed in the autocomplete form
+              this.searchResult.push(m)
             }
 
-            // Searching in name
+            // Cleaning the results
+            this.cleanSearchResults()
+
+            // Looking for match in members properties, add it if match
             for (let i = 0; i < this.members.length; i++) {
               let member = this.members[i]
-              // Searching in name
-              if (member.name.includes(memberProp)) {
-                addMember(member)
-              }
-              // Lastname
-
-              // Email
-
-              // Date
+              let memberProps = Object.keys(member)
+              // Searching by props
+              memberProps.forEach(prop => member[prop] && member[prop].includes(memberPropQuery) ? addMember(member) : '')
+              // Searching by `${m.name} ${m.lastname} [${m.email}]`
+              if (memberToString(member) === memberPropQuery) addMember(member)
             }
+
+            this.searchLoading = false
           }, 500)
         } else {
           this.reset()
         }
       },
+      goToMemberPage (member) {
+      },
+      cleanSearchResults () {
+        this.searchLoading = false
+        this.searchResult = []
+      },
       reset () {
-        this.members = this.membersCopy
+        this.searchValue = ''
+        this.cleanSearchResults()
       }
     },
     mounted () {
@@ -143,7 +163,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       })
       .then(res => {
         this.members = res.data.members
-        this.membersCopy = JSON.parse(JSON.stringify(this.members))
         this.isLoading = false
       })
       .catch(e => {
