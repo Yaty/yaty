@@ -44,15 +44,15 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           detailed
         >
           <template scope="props">
-            <b-table-column field="email" label="E-mail" sortable>
+            <b-table-column field="email" label="E-mail" sortable centered>
               {{ props.row.email }}
             </b-table-column>
 
-            <b-table-column field="name" label="First Name" sortable>
+            <b-table-column field="name" label="First Name" sortable centered>
               {{ props.row.name }}
             </b-table-column>
 
-            <b-table-column field="lastname" label="Last Name" sortable>
+            <b-table-column field="lastname" label="Last Name" sortable centered>
               {{ props.row.lastname }}
             </b-table-column>
 
@@ -174,7 +174,4 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 </script>
 
 <style scoped>
-  .table th, td {
-    text-align: center;
-  }
 </style>
