@@ -58,7 +58,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
             </b-table-column>
 
             <b-table-column field="lastLogin" label="Last connection" sortable centered>
-              <span class="tag is-success">
+              <span :class="'tag ' + getDateColor(props.row.lastLogin)">
                   {{ props.row.lastLogin ? new Date(props.row.lastLogin).toLocaleDateString() : 'Never' }}
               </span>
             </b-table-column>
@@ -167,6 +167,22 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       reset () {
         this.searchValue = ''
         this.cleanSearchResults()
+      },
+      getDateColor (date) {
+        if (date) {
+          const d = new Date(date).getTime()
+          const now = new Date().getTime()
+          const dateDiff = now - d
+          if (dateDiff < 2.628e+9) { // 1 month
+            return 'is-success'
+          } else if (dateDiff < 7.884e+9) { // 3 months
+            return 'is-info'
+          } else {
+            return 'is-warning'
+          }
+        } else {
+          return 'is-danger'
+        }
       }
     },
     mounted () {
