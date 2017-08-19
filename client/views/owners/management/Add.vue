@@ -42,7 +42,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 <script>
   // TODO : Add an image to each user after creation (success, unknown or failure !)
   // TODO : Add subscription choice
-  
+
   import { mapGetters } from 'vuex'
 
   export default {
