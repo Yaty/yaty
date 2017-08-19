@@ -7,37 +7,44 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 -->
 
 <template>
-  <div class="columns is-multiline is-centered">
-    <div class="column is-full" v-if="error">{{ error }}</div>
-    <b-panel hasCustomTemplate collapsible v-for="member in members" :key="member.id" class="column is-one-quarter" :open="false" :header="getMemberName(member)">
-      <div class="panel-block has-text-centered">
-        <div class="content">
-          <label class="label">Email</label>
-          <p class="control">
-            <input v-model="member.email" class="input" type="text" placeholder="email@example.org">
-          </p>
+  <div class="box">
+    <p class="title">{{ user.selectedGym.name }}</p>
+    <div class="columns is-multiline is-centered">
+      <div class="column is-full" v-if="error">{{ error }}</div>
+      <b-panel hasCustomTemplate collapsible v-for="member in members" :key="member.id" class="column is-one-quarter" :open="false" :header="getMemberName(member)">
+        <div class="panel-block has-text-centered">
+          <div class="content">
+            <label class="label">Email</label>
+            <p class="control">
+              <input v-model="member.email" class="input" type="text" placeholder="email@example.org">
+            </p>
 
-          <label class="label">Name</label>
-          <p class="control">
-            <input v-model="member.name" class="input" type="text" placeholder="Name">
-          </p>
+            <label class="label">Name</label>
+            <p class="control">
+              <input v-model="member.name" class="input" type="text" placeholder="Name">
+            </p>
 
-          <label class="label">Last name</label>
-          <p class="control">
-            <input v-model="member.lastname" class="input" type="text" placeholder="Lastname">
-          </p>
+            <label class="label">Last name</label>
+            <p class="control">
+              <input v-model="member.lastname" class="input" type="text" placeholder="Lastname">
+            </p>
+          </div>
         </div>
+      </b-panel>
+      <div class="column has-text-centered is-full">
+        <button class="button is-primary is-outlined" @click="addMember">New member</button>
+        <button class="button is-info is-outlined" @click="createMembers">Create members</button>
       </div>
-    </b-panel>
-    <div class="column has-text-centered is-full">
-      <button class="button is-primary is-outlined" @click="addMember">New member</button>
-      <button class="button is-info is-outlined" @click="createMembers">Create members</button>
     </div>
   </div>
 </template>
 
 <script>
-  // TODO : Add an image to each user after creation (sucess, unknown or failure !)
+  // TODO : Add an image to each user after creation (success, unknown or failure !)
+  // TODO : Add subscription choice
+  
+  import { mapGetters } from 'vuex'
+
   export default {
     data () {
       return {
@@ -52,6 +59,9 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         }]
       }
     },
+    computed: mapGetters({
+      user: 'user'
+    }),
     mounted () {
       this.addMember()
       this.addMember()

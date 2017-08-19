@@ -7,11 +7,55 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 -->
 
 <template>
-  <div>
-    Parameters
+  <div class="box">
+    <p class="title">{{ user.selectedGym.name }}</p>
+    <div class="columns is-multiline">
+      <div class="column is-one-quarter">
+        <b-field label="Name" expanded>
+          <b-input :value="user.selectedGym.name"></b-input>
+        </b-field>
+      </div>
+
+      <div class="column is-one-quarter">
+        <b-field label="Contact e-mail" expanded>
+          <b-input :value="user.selectedGym.contact"></b-input>
+        </b-field>
+      </div>
+
+      <div class="column is-full">
+        <b-field grouped>
+          <b-field label="Num">
+            <b-input type="number" value=""></b-input>
+          </b-field>
+          <b-field label="Street" expanded>
+            <b-input value=""></b-input>
+          </b-field>
+        </b-field>
+      </div>
+
+      <div class="column is-full">
+        Set owners here
+        Set routesetters here
+        Wait for multiselect buefy
+      </div>
+
+      <div class="column is-full">
+        <div class="control has-text-centered ">
+          <a class="button is-primary">Update {{ user.selectedGym.name }}</a>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<script></script>
+<script>
+  // TODO : set binded value in adress field
+  import { mapGetters } from 'vuex'
+  export default {
+    computed: mapGetters({
+      user: 'user'
+    })
+  }
+</script>
 
 <style scoped></style>

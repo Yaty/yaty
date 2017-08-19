@@ -7,79 +7,79 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 -->
 
 <template>
-  <div class="tile is-ancestor">
-    <div class="tile is-parent">
-      <div class="tile is-child box">
-        <p class="title">{{ user.selectedGym.name }}</p>
-        <div class="columns is-centered">
-          <div class="column is-half is-narrow">
-            <b-field>
-              <b-autocomplete
-                v-model="searchValue"
-                icon="search"
-                placeholder="Search a member"
-                max-results="50"
-                :loading="searchLoading"
-                :data="searchResult"
-                field="toString"
-                icon-pack="fa"
-                @input="searchMember"
-              >
-              </b-autocomplete>
-            </b-field>
-          </div>
-          <div class="column is-narrow">
-              <button class="button is-primary" @click="reset">Reset</button>
-          </div>
-        </div>
-
-        <b-table
-          :data="searchResult.length > 0 ? searchResult : members"
-          striped
-          narrowed
-          :loading="isLoading"
-          mobile-cards
-          paginated
-          per-page="20"
-          detailed
-          id="membersTable"
-        >
-          <template scope="props">
-            <b-table-column field="email" label="E-mail" sortable centered>
-              {{ props.row.email }}
-            </b-table-column>
-
-            <b-table-column field="name" label="First Name" sortable centered>
-              {{ props.row.name }}
-            </b-table-column>
-
-            <b-table-column field="lastname" label="Last Name" sortable centered>
-              {{ props.row.lastname }}
-            </b-table-column>
-
-            <b-table-column field="lastLogin" label="Last connection" sortable centered>
-              <span :class="'tag ' + getDateColor(props.row.lastLogin)">
-                  {{ props.row.lastLogin ? new Date(props.row.lastLogin).toLocaleDateString() : 'Never' }}
-              </span>
-            </b-table-column>
-          </template>
-
-          <template slot="detail" scope="props">
-            <div class="content">
-              <p>
-                <strong>{{ props.row.name }} {{ props.row.lastname }}</strong>
-                <br>
-                Actions ici
-              </p>
-            </div>
-          </template>
-
-          <div slot="empty" class="has-text-centered">
-            There is currently no members to display.
-          </div>
-        </b-table>
+  <div class="box">
+    <p class="title">{{ user.selectedGym.name }}</p>
+    <div class="columns is-centered">
+      <div class="column is-half is-narrow">
+        <b-field>
+          <b-autocomplete
+            v-model="searchValue"
+            icon="search"
+            placeholder="Search a member"
+            max-results="50"
+            :loading="searchLoading"
+            :data="searchResult"
+            field="toString"
+            icon-pack="fa"
+            @input="searchMember"
+          >
+          </b-autocomplete>
+        </b-field>
+      </div>
+      <div class="column is-narrow">
+          <button class="button is-primary" @click="reset">Reset</button>
       </div>
     </div>
+
+    <b-table
+      :data="searchResult.length > 0 ? searchResult : members"
+      striped
+      narrowed
+      :loading="isLoading"
+      mobile-cards
+      paginated
+      per-page="20"
+      detailed
+      id="membersTable"
+    >
+      <template scope="props">
+        <b-table-column field="email" label="E-mail" sortable centered>
+          {{ props.row.email }}
+        </b-table-column>
+
+        <b-table-column field="name" label="First Name" sortable centered>
+          {{ props.row.name }}
+        </b-table-column>
+
+        <b-table-column field="lastname" label="Last Name" sortable centered>
+          {{ props.row.lastname }}
+        </b-table-column>
+
+        <b-table-column field="" label="Subscription" sortable centered>
+          TODO
+        </b-table-column>
+
+        <b-table-column field="lastLogin" label="Last connection" sortable centered>
+          <span :class="'tag ' + getDateColor(props.row.lastLogin)">
+              {{ props.row.lastLogin ? new Date(props.row.lastLogin).toLocaleDateString() : 'Never' }}
+          </span>
+        </b-table-column>
+      </template>
+
+      <template slot="detail" scope="props">
+        <div class="content">
+          <p>
+            <strong>{{ props.row.name }} {{ props.row.lastname }}</strong>
+            <br>
+            Actions ici
+          </p>
+        </div>
+      </template>
+
+      <div slot="empty" class="has-text-centered">
+        There is currently no members to display.
+      </div>
+    </b-table>
   </div>
 </template>
 

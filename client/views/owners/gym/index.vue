@@ -7,8 +7,14 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 -->
 
 <template>
-  <div>
-    Gym management
+  <div class="gym-management">
+    <transition
+      mode="out-in"
+      enter-active-class="fadeIn"
+      leave-active-class="fadeOut"
+      appear>
+      <router-view class="animated"></router-view>
+    </transition>
   </div>
 </template>
 

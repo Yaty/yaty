@@ -13,7 +13,7 @@ export default {
   meta: {
     icon: 'fa-gear',
     expanded: false,
-    label: 'My gym',
+    label: 'Gym',
     auth: 'owner'
   },
   component: lazyLoading('owners/gym', true),
@@ -26,6 +26,14 @@ export default {
       component: lazyLoading('owners/gym/Parameters'),
       meta: {
         label: 'Parameters'
+      }
+    },
+    {
+      name: 'Gym subscriptions',
+      path: 'subscriptions',
+      component: lazyLoading('owners/gym/Subscriptions'),
+      meta: {
+        label: 'Subscriptions'
       }
     }
   ]
