@@ -18,7 +18,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       </div>
       <div class="column is-one-quarter">
         <b-field label="Name">
-          <b-input :value="gym.name"></b-input>
+          <b-input v-model="gym.name"></b-input>
         </b-field>
         <b-field label="Logo">
           <b-field>
@@ -39,7 +39,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
       <div class="column is-three-quarters">
         <b-field label="Description" expanded>
-          <b-input type="textarea" maxlength="250" :value="gym.description"></b-input>
+          <b-input type="textarea" maxlength="250" v-model="gym.description"></b-input>
         </b-field>
       </div>
 
@@ -53,38 +53,38 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
       <div class="column is-one-third">
         <b-field label="E-mail">
-          <b-input type="email" :value="gym.email"></b-input>
+          <b-input type="email" v-model="gym.email"></b-input>
         </b-field>
       </div>
 
       <div class="column is-one-third">
         <b-field label="Phone n°1">
-          <b-input type="tel" :value="gym.phone_number1"></b-input>
+          <b-input type="tel" v-model="gym.phone_number1"></b-input>
         </b-field>
       </div>
 
       <div class="column is-one-third">
         <b-field label="Phone n°2">
-          <b-input type="tel" :value="gym.phone_number2"></b-input>
+          <b-input type="tel" v-model="gym.phone_number2"></b-input>
         </b-field>
       </div>
 
       <div class="column is-full">
         <b-field grouped>
           <b-field label="Street number">
-            <b-input type="number" :value="gym.street_number"></b-input>
+            <b-input type="number" v-model="gym.street_number"></b-input>
           </b-field>
           <b-field label="Street name">
-            <b-input :value="gym.street_name"></b-input>
+            <b-input v-model="gym.street_name"></b-input>
           </b-field>
           <b-field label="City">
-            <b-input :value="gym.city"></b-input>
+            <b-input v-model="gym.city"></b-input>
           </b-field>
           <b-field label="Postal code">
-            <b-input type="number" :value="gym.postal_code"></b-input>
+            <b-input type="number" v-model="gym.postal_code"></b-input>
           </b-field>
           <b-field label="Country">
-            <b-select placeholder="Select a country" :value="gym.country">
+            <b-select placeholder="Select a country" v-model="gym.country">
               <option v-for="(country, key) in countries" :value="key">{{ country }}</option>
             </b-select>
           </b-field>
@@ -100,13 +100,47 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       </div>
 
       <div class="column is-full">
-        Set owners here
-        Set routesetters here
-        Wait for multiselect buefy
+        <b-table
+          :data="staff"
+          striped
+          narrowed
+          :loading="loading"
+          mobile-cards
+          paginated
+          per-page="10"
+        >
+          <template scope="props">
+            <b-table-column field="email" label="E-mail" sortable centered>
+              {{ props.row.email }}
+            </b-table-column>
+
+            <b-table-column field="name" label="First Name" sortable centered>
+              {{ props.row.name }}
+            </b-table-column>
+
+            <b-table-column field="lastname" label="Last Name" sortable centered>
+              {{ props.row.lastname }}
+            </b-table-column>
+
+            <b-table-column field="role" label="Role" sortable centered>
+              <b-select class="has-text-centered" v-model="props.row.role">
+                <option value="climber">Climbers</option>
+                <option value="routesetters">Route setters</option>
+                <option value="owner">Owner</option>
+              </b-select>
+            </b-table-column>
+          </template>
+
+          <div slot="empty" class="has-text-centered">
+            There is currently no staff members to display.
+          </div>
+        </b-table>
       </div>
 
-      <div class="column is-full has-text-centered">
-        <a class="button is-info" @click="update">Update</a>
+      <div class="column is-full level">
+        <div class="level-right">
+          <a class="button is-info" @click="update">Update</a>
+        </div>
       </div>
 
     </div>
@@ -122,8 +156,15 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 <script>
   // TODO : set binded value in adress field
   import { mapGetters } from 'vuex'
+  import BField from '../../../../node_modules/buefy/src/components/field/Field.vue'
+  import BInput from '../../../../node_modules/buefy/src/components/input/Input.vue'
+  import BSelect from '../../../../node_modules/buefy/src/components/select/Select.vue'
 
   export default {
+    components: {
+      BSelect,
+      BInput,
+      BField},
     data () {
       return {
         countries: {
@@ -375,6 +416,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         },
         logo: null, // to remove once in gym
         gym: null,
+        staff: null,
         loading: null,
         error: null
       }
@@ -388,6 +430,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       this.axios.get(process.env.BACKEND + 'gyms/' + this.user.selectedGym.id)
         .then(res => {
           this.gym = res.data.gym
+          this.staff = res.data.staff
           this.loading = false
         })
         .catch(e => {
@@ -398,6 +441,20 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     },
     methods: {
       update () {
+        this.axios.put(process.env.BACKEND + 'gyms/update', {
+          gym: this.gym,
+          staff: this.staff
+        })
+          .then(res => {
+            this.$toast.open({
+              message: this.gym.name + ' successfully updated !',
+              type: 'is-success',
+              position: 'is-bottom-right'
+            })
+          })
+          .catch(e => {
+            console.log(e)
+          })
       }
     }
   }
