@@ -15,6 +15,9 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
       <div class="column has-text-centered">
         <a class="button is-primary">New subscription</a>
+      </div>
+
+      <div class="column has-text-centered">
         <a class="button is-info">Refresh</a>
       </div>
 
