@@ -20,21 +20,24 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         <b-field label="Name">
           <b-input v-model="gym.name"></b-input>
         </b-field>
-        <b-field label="Logo">
-          <b-field>
-            <b-upload v-model="gym.logo">
-              <a class="button is-primary">
-                <b-icon pack="fa" icon="upload"></b-icon>
-                <span>Click to upload</span>
-              </a>
-            </b-upload>
-            <div v-if="gym.logo">
-              <span class="file-name">
-                  {{ logo.name }}
+
+        <label class="label has-text-centered">Logo <i @click="displayLogo" class="fa fa-search" style="cursor: pointer; vertical-align: middle;"></i></label>
+        <div class="file has-name is-centered">
+          <label class="file-label">
+            <input @change="getLogo" class="file-input" type="file" accept="image/gif,image/jpeg,image/png" name="resume">
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fa fa-upload"></i>
               </span>
-            </div>
-          </b-field>
-        </b-field>
+              <span class="file-label">
+                Choose a logo…
+              </span>
+            </span>
+            <span class="file-name" v-if="logoName">
+              {{ logoName }}
+            </span>
+          </label>
+        </div>
       </div>
 
       <div class="column is-three-quarters">
@@ -69,25 +72,31 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         </b-field>
       </div>
 
-      <div class="column is-full">
-        <b-field grouped>
-          <b-field label="Street number">
-            <b-input type="number" v-model="gym.street_number"></b-input>
-          </b-field>
-          <b-field label="Street name">
-            <b-input v-model="gym.street_name"></b-input>
-          </b-field>
-          <b-field label="City">
-            <b-input v-model="gym.city"></b-input>
-          </b-field>
-          <b-field label="Postal code">
-            <b-input type="number" v-model="gym.postal_code"></b-input>
-          </b-field>
-          <b-field label="Country">
-            <b-select placeholder="Select a country" v-model="gym.country">
-              <option v-for="(country, key) in countries" :value="key">{{ country }}</option>
-            </b-select>
-          </b-field>
+      <div class="column is-2">
+        <b-field label="Street number">
+          <b-input type="number" v-model="gym.street_number"></b-input>
+        </b-field>
+      </div>
+      <div class="column is-3">
+        <b-field label="Street name">
+          <b-input v-model="gym.street_name"></b-input>
+        </b-field>
+      </div>
+      <div class="column is-2">
+        <b-field label="City">
+          <b-input v-model="gym.city"></b-input>
+        </b-field>
+      </div>
+      <div class="column is-2">
+        <b-field label="Postal code">
+          <b-input type="number" v-model="gym.postal_code"></b-input>
+        </b-field>
+      </div>
+      <div class="column is-2">
+        <b-field label="Country">
+          <b-select placeholder="Select a country" v-model="gym.country">
+            <option v-for="(country, key) in countries" :value="key">{{ country }}</option>
+          </b-select>
         </b-field>
       </div>
 
@@ -154,17 +163,10 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 </template>
 
 <script>
-  // TODO : set binded value in adress field
   import { mapGetters } from 'vuex'
-  import BField from '../../../../node_modules/buefy/src/components/field/Field.vue'
-  import BInput from '../../../../node_modules/buefy/src/components/input/Input.vue'
-  import BSelect from '../../../../node_modules/buefy/src/components/select/Select.vue'
+  // TODO : Load logo when user click, otherwise the page is too big
 
   export default {
-    components: {
-      BSelect,
-      BInput,
-      BField},
     data () {
       return {
         countries: {
@@ -414,11 +416,11 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           ZM: 'Zambia',
           ZW: 'Zimbabwe'
         },
-        logo: null, // to remove once in gym
         gym: null,
         staff: null,
         loading: null,
-        error: null
+        error: null,
+        logoName: null
       }
     },
     computed: mapGetters({
@@ -430,6 +432,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       this.axios.get(process.env.BACKEND + 'gyms/' + this.user.selectedGym.id)
         .then(res => {
           this.gym = res.data.gym
+          this.logoName = this.gym.logo ? 'Preview' : 'Add a logo'
           this.staff = res.data.staff
           this.loading = false
         })
@@ -440,6 +443,31 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         })
     },
     methods: {
+      displayLogo () {
+        if (this.gym && this.gym.hasOwnProperty('logo') && this.gym.logo) {
+          this.$dialog.alert({
+            title: 'Logo preview',
+            message: '<img src="' + this.gym.logo + '"></img>',
+            confirmText: 'OK'
+          })
+        }
+      },
+      getLogo (logo) {
+        const target = logo.target
+        if (target && target.files && target.files.length === 1) {
+          const file = target.files[0]
+          this.logoName = file.name
+
+          const reader = new window.FileReader()
+          const vm = this
+
+          reader.onload = (e) => {
+            vm.gym.logo = e.target.result
+          }
+
+          reader.readAsDataURL(file)
+        }
+      },
       update () {
         this.axios.put(process.env.BACKEND + 'gyms/update', {
           gym: this.gym,
