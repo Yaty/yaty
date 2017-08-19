@@ -16,9 +16,9 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
             <i class="fa fa-bars" aria-hidden="true" v-show="!sidebar.hidden"></i>
           </a>
 
-          <div class="nav-item">
+          <div class="nav-item" v-if="$auth.check() && user.gyms && user.gyms.length > 0">
             <b-field>
-              <b-select v-model="selectedGym" v-if="$auth.check() && user.gyms && user.gyms.length > 0" placeholder="Select a gym">
+              <b-select v-model="selectedGym" placeholder="Select a gym">
                 <option
                   v-for="gym in user.gyms"
                   :value="gym"
@@ -31,7 +31,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
           <div class="nav-item">
             <router-link v-if="$auth.check()" to="/add-gym" class="button is-primary is-outlined" title="Add a gym !">
-              <i class="fa fa-plus"></i>
+                <i v-if="user.gyms && user.gyms.length > 0" class="fa fa-plus"></i>
+                <span v-else>Add a gym to your account</span>
             </router-link>
           </div>
         </div>

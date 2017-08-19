@@ -18,7 +18,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         <div class="card-content" v-if="gymsExists">
           <div class="content">
             <b-field>
-              <b-select v-model="selectedGym" placeholder="Select a gym">
+              <b-select v-model="selectedGym" class="has-text-centered" placeholder="Select a gym">
                 <option
                   v-for="gym in gyms"
                   :value="gym"
@@ -90,7 +90,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         user: 'user'
       })
     },
-    mounted () {
+    created () {
       this.gymsLoading = true
       this.axios.get(process.env.BACKEND + 'gyms')
         .then(response => {

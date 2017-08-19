@@ -78,7 +78,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     computed: mapGetters({
       user: 'user'
     }),
-    mounted () {
+    created () {
       this.isLoading = true
       this.axios.get(process.env.BACKEND + 'gyms/subscriptions', {
         params: {

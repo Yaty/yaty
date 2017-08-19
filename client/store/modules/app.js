@@ -37,7 +37,7 @@ const updateGyms = () => {
     for (let gym of state.user.gyms) {
       if (String(gym.id) === String(selectedGymId)) {
         state.user.selectedGym = gym
-        state.user.role = state.user.selectedGym.role
+        state.user.role = state.user.selectedGym ? state.user.selectedGym.role : null
         return
       }
     }
@@ -45,7 +45,7 @@ const updateGyms = () => {
 
   // If the gym wasn't found we select the first gym (or null)
   state.user.selectedGym = state.user.gyms && state.user.gyms.length > 0 && state.user.gyms[0] ? state.user.gyms[0] : null
-  state.user.role = state.user.selectedGym.role
+  state.user.role = state.user.selectedGym ? state.user.selectedGym.role : null
   if (state.user.selectedGym) window.localStorage.setItem('selectedGymId', state.user.selectedGym.id)
 }
 

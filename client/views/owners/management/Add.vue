@@ -62,7 +62,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     computed: mapGetters({
       user: 'user'
     }),
-    mounted () {
+    created () {
       this.addMember()
       this.addMember()
     },

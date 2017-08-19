@@ -8,26 +8,29 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
 <template>
   <div class="box">
-    <p class="title">{{ user.selectedGym.name }}</p>
-    <div class="columns is-multiline">
+    <p class="title level">
+      <span class="level-left">{{ user.selectedGym.name }}</span>
+      <a class="button is-info level-right" @click="update">Update</a>
+    </p>
+    <div v-if="gym" class="columns is-multiline">
       <div class="column is-full">
         <p class="subtitle">General information</p>
       </div>
       <div class="column is-one-quarter">
         <b-field label="Name">
-          <b-input :value="user.selectedGym.name"></b-input>
+          <b-input :value="gym.name"></b-input>
         </b-field>
         <b-field label="Logo">
           <b-field>
-            <b-upload v-model="logo">
+            <b-upload v-model="gym.logo">
               <a class="button is-primary">
                 <b-icon pack="fa" icon="upload"></b-icon>
                 <span>Click to upload</span>
               </a>
             </b-upload>
-            <div v-if="logo && logo.length">
+            <div v-if="gym.logo">
               <span class="file-name">
-                  {{ logo[0].name }}
+                  {{ logo.name }}
               </span>
             </div>
           </b-field>
@@ -36,7 +39,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
       <div class="column is-three-quarters">
         <b-field label="Description" expanded>
-          <b-input type="textarea" maxlength="250" value=""></b-input>
+          <b-input type="textarea" maxlength="250" :value="gym.description"></b-input>
         </b-field>
       </div>
 
@@ -50,38 +53,38 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
       <div class="column is-one-third">
         <b-field label="E-mail">
-          <b-input type="email" :value="user.selectedGym.contact"></b-input>
+          <b-input type="email" :value="gym.email"></b-input>
         </b-field>
       </div>
 
       <div class="column is-one-third">
         <b-field label="Phone n°1">
-          <b-input type="tel" value=""></b-input>
+          <b-input type="tel" :value="gym.phone_number1"></b-input>
         </b-field>
       </div>
 
       <div class="column is-one-third">
         <b-field label="Phone n°2">
-          <b-input type="tel" value=""></b-input>
+          <b-input type="tel" :value="gym.phone_number2"></b-input>
         </b-field>
       </div>
 
       <div class="column is-full">
         <b-field grouped>
           <b-field label="Street number">
-            <b-input type="number" value=""></b-input>
+            <b-input type="number" :value="gym.street_number"></b-input>
           </b-field>
           <b-field label="Street name">
-            <b-input value=""></b-input>
+            <b-input :value="gym.street_name"></b-input>
           </b-field>
           <b-field label="City">
-            <b-input value=""></b-input>
+            <b-input :value="gym.city"></b-input>
           </b-field>
           <b-field label="Postal code">
-            <b-input type="number" value=""></b-input>
+            <b-input type="number" :value="gym.postal_code"></b-input>
           </b-field>
           <b-field label="Country">
-            <b-select placeholder="Select a country">
+            <b-select placeholder="Select a country" :value="gym.country">
               <option v-for="(country, key) in countries" :value="key">{{ country }}</option>
             </b-select>
           </b-field>
@@ -102,11 +105,16 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         Wait for multiselect buefy
       </div>
 
-      <div class="column is-full">
-        <div class="control has-text-centered ">
-          <a class="button is-primary">Update {{ user.selectedGym.name }}</a>
-        </div>
+      <div class="column is-full has-text-centered">
+        <a class="button is-info" @click="update">Update</a>
       </div>
+
+    </div>
+    <div v-else-if="loading" class="has-text-centered">
+      <i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw"></i>
+    </div>
+    <div v-else>
+      Error : {{ error }}
     </div>
   </div>
 </template>
@@ -114,9 +122,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 <script>
   // TODO : set binded value in adress field
   import { mapGetters } from 'vuex'
-  import BField from '../../../../node_modules/buefy/src/components/field/Field.vue'
+
   export default {
-    components: {BField},
     data () {
       return {
         countries: {
@@ -366,12 +373,33 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           ZM: 'Zambia',
           ZW: 'Zimbabwe'
         },
-        logo: null
+        logo: null, // to remove once in gym
+        gym: null,
+        loading: null,
+        error: null
       }
     },
     computed: mapGetters({
       user: 'user'
-    })
+    }),
+    created () {
+      this.loading = true
+      this.error = null
+      this.axios.get(process.env.BACKEND + 'gyms/' + this.user.selectedGym.id)
+        .then(res => {
+          this.gym = res.data.gym
+          this.loading = false
+        })
+        .catch(e => {
+          console.log(e)
+          this.error = e.response.statusText
+          this.loading = false
+        })
+    },
+    methods: {
+      update () {
+      }
+    }
   }
 </script>
 

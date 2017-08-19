@@ -8,10 +8,20 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
 <template>
   <div>
-    To create your gym and add it to YatyAdmin please contact this email : contact@hdaroit.fr
+    For now the gym creation is not automatic.<br>
+    If you want to use YatyAdmin and add ur gym pease contact this address : <a href="mailto:contact@hdaroit.fr">contact@hdaroit.fr</a>.<br>
+    <a class="button is-primary" @click="goBack">Go back</a>
   </div>
 </template>
 
-<script></script>
+<script>
+  export default {
+    methods: {
+      goBack () {
+        this.$router.back()
+      }
+    }
+  }
+</script>
 
 <style scoped></style>

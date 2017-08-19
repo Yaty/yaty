@@ -185,7 +185,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         }
       }
     },
-    mounted () {
+    created () {
       this.isLoading = true
       this.axios.get(process.env.BACKEND + 'gyms/members', {
         params: {
