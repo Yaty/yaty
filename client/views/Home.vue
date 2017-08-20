@@ -15,7 +15,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     <h1 class="is-title is-bold">{{ name.replace('-', ' ') }}</h1>
 
     <p>
-      <strong>{{ projectdescription }}</strong>
+      <strong>{{ description }}</strong>
     </p>
 
     <p>
