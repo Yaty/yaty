@@ -24,7 +24,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         <label class="label has-text-centered">Logo <i @click="displayLogo" class="fa fa-search" style="cursor: pointer; vertical-align: middle;"></i></label>
         <div class="file has-name is-centered">
           <label class="file-label">
-            <input @change="getLogo" class="file-input" type="file" accept="image/gif,image/jpeg,image/png" name="resume">
+            <input @change="setLogo" class="file-input" type="file" accept="image/gif,image/jpeg,image/png" name="resume">
             <span class="file-cta">
               <span class="file-icon">
                 <i class="fa fa-upload"></i>
@@ -417,10 +417,12 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           ZW: 'Zimbabwe'
         },
         gym: null,
+        logo: null,
         staff: null,
         loading: null,
         error: null,
-        logoName: null
+        logoName: null,
+        logoHasChanged: null
       }
     },
     computed: mapGetters({
@@ -432,7 +434,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       this.axios.get(process.env.BACKEND + 'gyms/' + this.user.selectedGym.id)
         .then(res => {
           this.gym = res.data.gym
-          this.logoName = this.gym.logo ? 'Preview' : 'Add a logo'
+          this.logoName = this.gym.logo ? 'New logo' : 'Add a logo'
           this.staff = res.data.staff
           this.loading = false
         })
@@ -443,27 +445,43 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         })
     },
     methods: {
+      loadLogo () {
+        return new Promise((resolve, reject) => {
+          this.axios.get(process.env.BACKEND + 'gyms/' + this.user.selectedGym.id + '/logo')
+            .then(res => {
+              this.logo = res.data
+              return resolve()
+            })
+            .catch(e => {
+              console.log(e)
+              return reject(e)
+            })
+        })
+      },
       displayLogo () {
-        if (this.gym && this.gym.hasOwnProperty('logo') && this.gym.logo) {
+        const alert = () => {
           this.$dialog.alert({
             title: 'Logo preview',
-            message: '<img src="' + this.gym.logo + '"></img>',
+            message: '<img alt="Logo" src="' + this.logo + '"></img>',
             confirmText: 'OK'
           })
         }
+
+        if (!this.logo) this.loadLogo().then(alert)
+        else alert()
       },
-      getLogo (logo) {
+      setLogo (logo) {
         const target = logo.target
-        if (target && target.files && target.files.length === 1) {
+        if (target && target.files && target.files.length === 1 && /\.(jpe?g|png|gif)$/i.test(target.files[0].name)) {
           const file = target.files[0]
           this.logoName = file.name
 
           const reader = new window.FileReader()
-          const vm = this
 
-          reader.onload = (e) => {
-            vm.gym.logo = e.target.result
-          }
+          reader.addEventListener('load', () => {
+            this.logo = reader.result
+            this.logoHasChanged = true
+          }, false)
 
           reader.readAsDataURL(file)
         }
@@ -473,6 +491,15 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           gym: this.gym,
           staff: this.staff
         })
+          .then(res => {
+            if (this.logoHasChanged) {
+              return this.axios.put(process.env.BACKEND + 'gyms/update/logo', {
+                gym: this.gym.id,
+                logo: this.logo
+              })
+            }
+            return true
+          })
           .then(res => {
             this.$toast.open({
               message: this.gym.name + ' successfully updated !',
