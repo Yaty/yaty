@@ -11,77 +11,158 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     <b-loading :active.sync="loading" :canCancel="true"></b-loading>
     <p class="title">{{ user.selectedGym.name }}</p>
     <div class="columns is-multiline is-centered">
-      <div class="column is-full" v-if="error">{{ error }}</div>
-      <b-panel hasCustomTemplate collapsible v-for="member in members" :key="member.id" class="column is-one-quarter" :open="false" :header="getMemberName(member)">
-        <div class="panel-block has-text-centered">
-          <div class="content">
-            <b-field label="Email">
-              <b-input v-model="member.email" type="text" placeholder="email@example.org"></b-input>
-            </b-field>
+      <div class="column is-full has-text-centered" v-if="error">{{ error }}</div>
 
-            <b-field label="Name">
-              <b-input v-model="member.name" type="text" placeholder="Name"></b-input>
-            </b-field>
+      <div class="column is-full">
+        <b-table
+          :data="members"
+          striped
+          narrowed
+          mobile-cards
+        >
+          <template scope="props">
+            <b-table-column field="created" label="Created" :visible="creationDone" sortable centered>
+              <b-field>
+                <b-checkbox v-model="props.row.created" disabled></b-checkbox>
+              </b-field>
+            </b-table-column>
 
-            <b-field label="Last name">
-              <b-input v-model="member.lastname" type="text" placeholder="Lastname"></b-input>
-            </b-field>
+            <b-table-column field="email" label="E-mail" sortable centered>
+              <b-field>
+                <b-input v-model="props.row.email" type="email" placeholder="email@example.org"></b-input>
+              </b-field>
+            </b-table-column>
 
-            <b-field label="Role">
-              <b-select v-model="member.role" class="has-text-centered">
-                <option v-for="role in roles.roles" :value="role">{{ role.charAt(0).toUpperCase() + role.slice(1) }}</option>
-              </b-select>
-            </b-field>
+            <b-table-column field="name" label="First Name" sortable centered>
+              <b-field>
+                <b-input v-model="props.row.name" type="text" placeholder="Name"></b-input>
+              </b-field>
+            </b-table-column>
+
+            <b-table-column field="lastname" label="Last Name" sortable centered>
+              <b-field>
+                <b-input v-model="props.row.lastname" type="text" placeholder="Lastname"></b-input>
+              </b-field>
+            </b-table-column>
+
+            <b-table-column field="subscription" label="Subscription" sortable centered>
+              <b-field>
+                <b-select v-model="props.row.subscription" class="has-text-centered" placeholder="Select a subscription">
+                  <option v-for="subscription in subscriptions" :value="subscription">{{ subscription.label }}</option>
+                </b-select>
+              </b-field>
+            </b-table-column>
+
+            <b-table-column field="role" label="Role" sortable centered>
+              <b-field>
+                <b-select v-model="props.row.role" class="has-text-centered">
+                  <option v-for="role in roles.roles" :value="role">{{ role.charAt(0).toUpperCase() + role.slice(1) }}</option>
+                </b-select>
+              </b-field>
+            </b-table-column>
+          </template>
+
+          <div slot="empty" class="has-text-centered">
+            There is currently no members to display.
           </div>
-        </div>
-      </b-panel>
+        </b-table>
+      </div>
+
       <div class="column has-text-centered is-full">
         <button class="button is-primary is-outlined" @click="addMember">New member</button>
-        <button class="button is-info is-outlined" @click="createMembers">Create members</button>
+        <button class="button is-info is-outlined" :title="createMembersBtnTitle" :disabled="!checkIfMembersAreCorrect" @click="createMembers">Create members</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  // TODO : Add an image to each user after creation (success, unknown or failure !)
-  // TODO : Add subscription choice
-
   import { mapGetters } from 'vuex'
+  import BCheckbox from '../../../../node_modules/buefy/src/components/checkbox/Checkbox.vue'
 
   export default {
+    components: {BCheckbox},
     data () {
       return {
         error: null,
         loading: null,
         creationDone: null,
         roles: null,
-        members: []
+        subscriptions: null,
+        members: [],
+        createMembersBtnTitle: ''
       }
     },
-    computed: mapGetters({
-      user: 'user'
-    }),
+    computed: {
+      ...mapGetters({
+        user: 'user'
+      }),
+      // TODO : Check if this email was already entered
+      checkIfMembersAreCorrect () {
+        if (!this.subscriptions || this.subscriptions.length === 0 || this.members.length === 0) {
+          this.createMembersBtnTitle = 'Some of your members are invalid'
+          return false
+        }
+        let validity = true
+        for (let i = 0; i < this.members.length; i++) {
+          const member = this.members[i]
+          const nameIsInvalid = !member.name || member.name.length === 0
+          const lastNameIsInvalid = !member.lastname || member.lastname.length === 0
+          const emailIsInvalid = !member.email || member.email.length === 0 || !this.isMailValid(member.email)
+          const subscriptionIsInvalid = !member.subscription || !member.subscription.id
+          if (nameIsInvalid || lastNameIsInvalid || emailIsInvalid || subscriptionIsInvalid) {
+            member.valid = false
+            validity = false
+          } else {
+            member.valid = true
+          }
+        }
+        if (!validity) this.createMembersBtnTitle = 'Some of your members are invalid'
+        return validity
+      }
+    },
     created () {
       this.loading = true
-      this.axios.get(process.env.BACKEND + 'users/roles')
-        .then(res => {
-          this.roles = res.data
+      this.fetchRoles()
+        .then(this.fetchSubscriptions)
+        .then(() => {
           this.addMember()
           this.loading = false
         })
         .catch(e => {
-          console.log(e)
+          if (e.hasOwnProperty('response')) this.error = e.response.statusText
+          else this.error = 'Error while loading this page.'
           this.loading = false
         })
     },
     methods: {
-      getMemberName (member) {
-        if (member.name) {
-          if (member.lastname) return member.name + ' ' + member.lastname
-          return member.name
-        }
-        return 'Member'
+      isMailValid (mail) {
+        return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(mail)
+      },
+      fetchRoles () {
+        return new Promise((resolve, reject) => {
+          this.axios.get(process.env.BACKEND + 'users/roles')
+            .then(res => {
+              this.roles = res.data
+              return resolve()
+            })
+            .catch(reject)
+        })
+      },
+      fetchSubscriptions () {
+        return new Promise((resolve, reject) => {
+          this.axios.get(process.env.BACKEND + 'gyms/subscriptions', {
+            params: {
+              gym: this.user.selectedGym.id
+            }
+          })
+            .then(res => {
+              this.subscriptions = res.data.subscriptions
+              if (this.subscriptions.length === 0) this.error = 'Please add subscriptions before adding members.'
+              return resolve()
+            })
+            .catch(reject)
+        })
       },
       addMember () {
         this.members.push({
@@ -90,8 +171,16 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           name: null,
           lastname: null,
           created: null,
-          role: this.roles.default
+          valid: null,
+          role: this.roles.default,
+          subscription: null
         })
+      },
+      getMemberCreationStatus (row) {
+        const memberCreated = row.created
+        if (memberCreated === true) return 'member-created'
+        if (memberCreated === false) return 'member-not-created'
+        return ''
       },
       getMemberByID (id) {
         for (let i = 0; i < this.members.length; i++) {
@@ -100,22 +189,11 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         return null
       },
       createMembers () {
-        // Removing bad users
-        for (let index = 0; index < this.members.length; index++) {
-          let member = this.members[index]
-          if (!member || !member.email || !member.name || !member.lastname) {
-            this.members.splice(index, 1)
-            index--
-          }
-        }
-
-        if (this.members.length > 0) {
-          this.error = null
-          this.creationDone = false
-          this.axios.post(process.env.BACKEND + 'gyms/members/add', {
-            members: this.members,
-            gym: this.$store.getters.user.selectedGym.id
-          })
+        this.creationDone = false
+        this.axios.post(process.env.BACKEND + 'gyms/members/add', {
+          members: this.members,
+          gym: this.$store.getters.user.selectedGym.id
+        })
           .then(res => {
             res.data.members.forEach(member => {
               this.getMemberByID(member.id).created = member.created
@@ -123,11 +201,9 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
             this.creationDone = true
           })
           .catch(e => {
+            this.creationDone = true
             this.error = e.response.statusText
           })
-        } else {
-          this.error = 'Invalid members.'
-        }
       }
     }
   }
