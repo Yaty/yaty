@@ -8,26 +8,30 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
 <template>
   <div class="box">
+    <b-loading :active.sync="loading" :canCancel="true"></b-loading>
     <p class="title">{{ user.selectedGym.name }}</p>
     <div class="columns is-multiline is-centered">
       <div class="column is-full" v-if="error">{{ error }}</div>
       <b-panel hasCustomTemplate collapsible v-for="member in members" :key="member.id" class="column is-one-quarter" :open="false" :header="getMemberName(member)">
         <div class="panel-block has-text-centered">
           <div class="content">
-            <label class="label">Email</label>
-            <p class="control">
-              <input v-model="member.email" class="input" type="text" placeholder="email@example.org">
-            </p>
+            <b-field label="Email">
+              <b-input v-model="member.email" type="text" placeholder="email@example.org"></b-input>
+            </b-field>
 
-            <label class="label">Name</label>
-            <p class="control">
-              <input v-model="member.name" class="input" type="text" placeholder="Name">
-            </p>
+            <b-field label="Name">
+              <b-input v-model="member.name" type="text" placeholder="Name"></b-input>
+            </b-field>
 
-            <label class="label">Last name</label>
-            <p class="control">
-              <input v-model="member.lastname" class="input" type="text" placeholder="Lastname">
-            </p>
+            <b-field label="Last name">
+              <b-input v-model="member.lastname" type="text" placeholder="Lastname"></b-input>
+            </b-field>
+
+            <b-field label="Role">
+              <b-select v-model="member.role" class="has-text-centered">
+                <option v-for="role in roles.roles" :value="role">{{ role.charAt(0).toUpperCase() + role.slice(1) }}</option>
+              </b-select>
+            </b-field>
           </div>
         </div>
       </b-panel>
@@ -49,22 +53,27 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     data () {
       return {
         error: null,
+        loading: null,
         creationDone: null,
-        members: [{
-          id: 0,
-          email: null,
-          name: null,
-          lastname: null,
-          created: null
-        }]
+        roles: null,
+        members: []
       }
     },
     computed: mapGetters({
       user: 'user'
     }),
     created () {
-      this.addMember()
-      this.addMember()
+      this.loading = true
+      this.axios.get(process.env.BACKEND + 'users/roles')
+        .then(res => {
+          this.roles = res.data
+          this.addMember()
+          this.loading = false
+        })
+        .catch(e => {
+          console.log(e)
+          this.loading = false
+        })
     },
     methods: {
       getMemberName (member) {
@@ -80,7 +89,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           email: null,
           name: null,
           lastname: null,
-          created: null
+          created: null,
+          role: this.roles.default
         })
       },
       getMemberByID (id) {
