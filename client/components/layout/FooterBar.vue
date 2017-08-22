@@ -7,7 +7,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 -->
 
 <template>
-  <footer class="footer" :style="[hiddenSidebarStyle]">
+  <footer id="footer" :style="[hiddenSidebarStyle]">
     <div class="container">
       <div class="content has-text-centered">
         <p class="social">
@@ -61,8 +61,10 @@ export default {
 @import '~bulma/sass/utilities/variables.sass';
 @import '~bulma/sass/utilities/mixins';
 
-.footer {
+#footer {
   margin-left: 180px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 
   @include mobile() {
     margin-left: 0;
@@ -70,10 +72,6 @@ export default {
 
   .social a {
     border-bottom: none !important;
-  }
-
-  .fa.fa-heart {
-    color: red;
   }
 }
 </style>
