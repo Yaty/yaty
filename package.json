@@ -58,6 +58,7 @@
     "vue-nprogress": "0.1.5",
     "vue-peity": "0.5.0",
     "vue-router": "^2.3.0",
+    "vuelidate": "^0.5.0",
     "vuex": "^2.2.1",
     "vuex-router-sync": "^4.1.2",
     "webpack-dev-middleware": "^1.12.0",

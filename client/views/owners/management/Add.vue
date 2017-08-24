@@ -77,11 +77,10 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 </template>
 
 <script>
+  // TODO : Use a tool to validate data
   import { mapGetters } from 'vuex'
-  import BCheckbox from '../../../../node_modules/buefy/src/components/checkbox/Checkbox.vue'
 
   export default {
-    components: {BCheckbox},
     data () {
       return {
         error: null,
@@ -175,12 +174,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           role: this.roles.default,
           subscription: null
         })
-      },
-      getMemberCreationStatus (row) {
-        const memberCreated = row.created
-        if (memberCreated === true) return 'member-created'
-        if (memberCreated === false) return 'member-not-created'
-        return ''
       },
       getMemberByID (id) {
         for (let i = 0; i < this.members.length; i++) {

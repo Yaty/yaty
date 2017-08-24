@@ -8,24 +8,26 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
 <template>
   <div class="box">
-    <p class="title level">
-      <span class="level-left">{{ user.selectedGym.name }}</span>
-      <a class="button is-info level-right" @click="update">Update</a>
-    </p>
-    <div v-if="gym" class="columns is-multiline">
-      <div class="column is-full">
-        <p class="subtitle">General information</p>
-      </div>
-      <div class="column is-one-quarter">
-        <b-field label="Name">
-          <b-input v-model="gym.name"></b-input>
-        </b-field>
+    <b-loading :active.sync="loading" :canCancel="true"></b-loading>
+    <div v-if="ready">
+      <p class="title level">
+        <span class="level-left">{{ user.selectedGym.name }}</span>
+        <a class="button is-info level-right" :disabled="$v.$invalid" :title="$v.$invalid ? 'Please check the validity of your inputs.' : ''" @click="update">Update</a>
+      </p>
+      <div v-if="gym" class="columns is-multiline">
+        <div class="column is-full">
+          <p class="subtitle">General information</p>
+        </div>
+        <div class="column is-one-quarter">
+          <b-field label="Name">
+            <b-input v-model="gym.name"></b-input>
+          </b-field>
 
-        <label class="label has-text-centered">Logo <i @click="displayLogo" class="fa fa-search" style="cursor: pointer; vertical-align: middle;"></i></label>
-        <div class="file has-name is-centered">
-          <label class="file-label">
-            <input @change="setLogo" class="file-input" type="file" accept="image/gif,image/jpeg,image/png" name="resume">
-            <span class="file-cta">
+          <label class="label has-text-centered">Logo <i @click="displayLogo" class="fa fa-search" style="cursor: pointer; vertical-align: middle;"></i></label>
+          <div class="file has-name is-centered">
+            <label class="file-label">
+              <input @change="setLogo" class="file-input" type="file" accept="image/gif,image/jpeg,image/png" name="resume">
+              <span class="file-cta">
               <span class="file-icon">
                 <i class="fa fa-upload"></i>
               </span>
@@ -33,138 +35,137 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
                 Choose a logo…
               </span>
             </span>
-            <span class="file-name" v-if="logoName">
+              <span class="file-name" v-if="logoName">
               {{ logoName }}
             </span>
-          </label>
-        </div>
-      </div>
-
-      <div class="column is-three-quarters">
-        <b-field label="Description" expanded>
-          <b-input type="textarea" maxlength="250" v-model="gym.description"></b-input>
-        </b-field>
-      </div>
-
-      <div class="column is-full">
-        <hr/>
-      </div>
-
-      <div class="column is-full">
-        <p class="subtitle">Contact</p>
-      </div>
-
-      <div class="column is-one-third">
-        <b-field label="E-mail">
-          <b-input type="email" v-model="gym.email"></b-input>
-        </b-field>
-      </div>
-
-      <div class="column is-one-third">
-        <b-field label="Phone n°1">
-          <b-input type="tel" v-model="gym.phone_number1"></b-input>
-        </b-field>
-      </div>
-
-      <div class="column is-one-third">
-        <b-field label="Phone n°2">
-          <b-input type="tel" v-model="gym.phone_number2"></b-input>
-        </b-field>
-      </div>
-
-      <div class="column is-2">
-        <b-field label="Street number">
-          <b-input type="number" v-model="gym.street_number"></b-input>
-        </b-field>
-      </div>
-      <div class="column is-3">
-        <b-field label="Street name">
-          <b-input v-model="gym.street_name"></b-input>
-        </b-field>
-      </div>
-      <div class="column is-2">
-        <b-field label="City">
-          <b-input v-model="gym.city"></b-input>
-        </b-field>
-      </div>
-      <div class="column is-2">
-        <b-field label="Postal code">
-          <b-input type="number" v-model="gym.postal_code"></b-input>
-        </b-field>
-      </div>
-      <div class="column is-2">
-        <b-field label="Country">
-          <b-select placeholder="Select a country" v-model="gym.country">
-            <option v-for="(country, key) in countries" :value="key">{{ country }}</option>
-          </b-select>
-        </b-field>
-      </div>
-
-      <div class="column is-full">
-        <hr/>
-      </div>
-
-      <div class="column is-full">
-        <p class="subtitle">Staff</p>
-      </div>
-
-      <div class="column is-full">
-        <b-table
-          :data="staff"
-          striped
-          narrowed
-          :loading="loading"
-          mobile-cards
-          paginated
-          per-page="10"
-        >
-          <template scope="props">
-            <b-table-column field="email" label="E-mail" sortable centered>
-              {{ props.row.email }}
-            </b-table-column>
-
-            <b-table-column field="name" label="First Name" sortable centered>
-              {{ props.row.name }}
-            </b-table-column>
-
-            <b-table-column field="lastname" label="Last Name" sortable centered>
-              {{ props.row.lastname }}
-            </b-table-column>
-
-            <b-table-column field="role" label="Role" sortable centered>
-              <b-select class="has-text-centered" v-model="props.row.role">
-                <option value="climber">Climbers</option>
-                <option value="routesetters">Route setters</option>
-                <option value="owner">Owner</option>
-              </b-select>
-            </b-table-column>
-          </template>
-
-          <div slot="empty" class="has-text-centered">
-            There is currently no staff members to display.
+            </label>
           </div>
-        </b-table>
-      </div>
-
-      <div class="column is-full level">
-        <div class="level-right">
-          <a class="button is-info" @click="update">Update</a>
         </div>
-      </div>
 
-    </div>
-    <div v-else-if="loading" class="has-text-centered">
-      <i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw"></i>
-    </div>
-    <div v-else>
-      Error : {{ error }}
+        <div class="column is-three-quarters">
+          <b-field label="Description" expanded>
+            <b-input type="textarea" maxlength="250" v-model="gym.description"></b-input>
+          </b-field>
+        </div>
+
+        <div class="column is-full">
+          <hr/>
+        </div>
+
+        <div class="column is-full">
+          <p class="subtitle">Contact</p>
+        </div>
+
+        <div class="column is-one-third">
+          <b-field label="E-mail">
+            <b-input type="email" v-model="gym.email"></b-input>
+          </b-field>
+        </div>
+
+        <div class="column is-one-third">
+          <b-field label="Phone n°1">
+            <b-input type="tel" v-model="gym.phone_number1"></b-input>
+          </b-field>
+        </div>
+
+        <div class="column is-one-third">
+          <b-field label="Phone n°2">
+            <b-input type="tel" v-model="gym.phone_number2"></b-input>
+          </b-field>
+        </div>
+
+        <div class="column is-2">
+          <b-field label="Street number">
+            <b-input type="number" v-model="gym.street_number"></b-input>
+          </b-field>
+        </div>
+        <div class="column is-3">
+          <b-field label="Street name">
+            <b-input v-model="gym.street_name"></b-input>
+          </b-field>
+        </div>
+        <div class="column is-2">
+          <b-field label="City">
+            <b-input v-model="gym.city"></b-input>
+          </b-field>
+        </div>
+        <div class="column is-2">
+          <b-field label="Postal code">
+            <b-input type="number" v-model="gym.postal_code"></b-input>
+          </b-field>
+        </div>
+        <div class="column is-2">
+          <b-field label="Country">
+            <b-select placeholder="Select a country" v-model="gym.country">
+              <option v-for="(country, key) in countries" :value="key">{{ country }}</option>
+            </b-select>
+          </b-field>
+        </div>
+
+        <div class="column is-full">
+          <hr/>
+        </div>
+
+        <div class="column is-full">
+          <p class="subtitle">Staff</p>
+        </div>
+
+        <div class="column is-full">
+          <b-table
+            :data="staff"
+            striped
+            narrowed
+            :loading="loading"
+            mobile-cards
+            paginated
+            per-page="10"
+          >
+            <template scope="props">
+              <b-table-column field="email" label="E-mail" sortable centered>
+                {{ props.row.email }}
+              </b-table-column>
+
+              <b-table-column field="name" label="First Name" sortable centered>
+                {{ props.row.name }}
+              </b-table-column>
+
+              <b-table-column field="lastname" label="Last Name" sortable centered>
+                {{ props.row.lastname }}
+              </b-table-column>
+
+              <b-table-column field="role" label="Role" sortable centered>
+                <b-select class="has-text-centered" v-model="props.row.role">
+                  <option v-for="role in roles" v-if="role" :value="role">{{ role.charAt(0).toUpperCase() + role.slice(1) }}</option>
+                </b-select>
+              </b-table-column>
+            </template>
+
+            <div slot="empty" class="has-text-centered">
+              There is currently no staff members to display.
+            </div>
+          </b-table>
+        </div>
+
+        <div class="column is-full level">
+          <div class="level-right">
+            <a class="button is-info" :disabled="$v.$invalid" :title="$v.$invalid ? 'Please check the validity of your inputs.' : ''" @click="update">Update</a>
+          </div>
+        </div>
+
+      </div>
+      <div v-else-if="loading" class="has-text-centered">
+        <i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw"></i>
+      </div>
+      <div v-else>
+        Error : {{ error }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  // TODO : Load logo when user click, otherwise the page is too big
+  import { required, requiredIf, minLength, numeric, email, maxLength } from 'vuelidate/lib/validators'
 
   export default {
     data () {
@@ -422,12 +423,66 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         loading: null,
         error: null,
         logoName: null,
-        logoHasChanged: null
+        logoHasChanged: null,
+        roles: null,
+        ready: false
       }
     },
-    computed: mapGetters({
-      user: 'user'
-    }),
+    validations: {
+      gym: {
+        requiredIf: requiredIf('ready'),
+        name: {
+          required,
+          minLength: minLength(3)
+        },
+        id: {
+          required,
+          numeric
+        },
+        description: {
+          maxLength: maxLength(250)
+        },
+        'email': {
+          required,
+          email
+        },
+        phone_number1: {
+          numeric
+        },
+        phone_number2: {
+          numeric
+        },
+        street_number: {
+          numeric
+        },
+        postal_code: {
+          numeric
+        }
+      },
+      staff: {
+        requiredIf: requiredIf('ready'),
+        $each: {
+          'email': {
+            required,
+            email
+          },
+          name: {
+            required
+          },
+          lastname: {
+            required
+          },
+          role: {
+            required
+          }
+        }
+      }
+    },
+    computed: {
+      ...mapGetters({
+        user: 'user'
+      })
+    },
     created () {
       this.loading = true
       this.error = null
@@ -436,12 +491,18 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           this.gym = res.data.gym
           this.logoName = this.gym.logo ? 'New logo' : 'Add a logo'
           this.staff = res.data.staff
+          return this.axios.get(process.env.BACKEND + 'users/roles')
+        })
+        .then(res => {
+          this.roles = res.data.roles
           this.loading = false
+          this.ready = true
         })
         .catch(e => {
           console.log(e)
           this.error = e.response.statusText
           this.loading = false
+          this.ready = false
         })
     },
     methods: {
@@ -487,6 +548,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         }
       },
       update () {
+        console.log(JSON.stringify(this.$v, null, 2))
+        /*
         this.axios.put(process.env.BACKEND + 'gyms/update', {
           gym: this.gym,
           staff: this.staff
@@ -510,6 +573,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           .catch(e => {
             console.log(e)
           })
+                   */
       }
     }
   }

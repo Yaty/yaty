@@ -9,6 +9,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 import Vue from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import Vuelidate from 'vuelidate'
 import VueAuth from '@websanova/vue-auth'
 import NProgress from 'vue-nprogress'
 import Notifications from 'vue-notification'
@@ -22,6 +23,7 @@ import { TOGGLE_SIDEBAR } from 'vuex-store/mutation-types'
 Vue.use(Buefy, {
   defaultIconPack: 'fa'
 })
+Vue.use(Vuelidate)
 Vue.router = router
 Vue.use(VueAxios, axios)
 Vue.use(VueAuth, {
