@@ -8,17 +8,14 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
 <template>
   <div class="box">
+    <b-loading :active.sync="isLoading" :canCancel="true"></b-loading>
     <div class="columns is-multiline">
       <div class="column is-narrow">
         <p class="title">{{ user.selectedGym.name }}</p>
       </div>
 
       <div class="column has-text-centered">
-        <a class="button is-primary">New subscription</a>
-      </div>
-
-      <div class="column has-text-centered">
-        <a class="button is-info">Refresh</a>
+        <a class="button is-primary" @click="setNewSubscription">New subscription</a>
       </div>
 
       <div class="column is-full">
@@ -26,7 +23,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           :data="subscriptions"
           striped
           narrowed
-          :loading="isLoading"
           mobile-cards
           paginated
           per-page="20"
@@ -42,7 +38,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
             </b-table-column>
 
             <b-table-column field="Duration" label="Duration" sortable centered>
-              {{ props.row.duration_in_days }}
+              {{ props.row.duration_in_days }} days
             </b-table-column>
           </template>
 
@@ -72,6 +68,11 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
     data () {
       return {
         subscriptions: [],
+        newSubscription: {
+          label: null,
+          description: null,
+          duration_in_days: null
+        },
         isLoading: null
       }
     },
@@ -93,6 +94,26 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         this.isLoading = false
         console.log(e)
       })
+    },
+    methods: {
+      setNewSubscription () {
+        const html =
+          '<b-field label="Label">' +
+            '<b-input v-model="newSubscriptions.label"></b-input>' +
+          '</b-field>' +
+          '<b-field>' +
+            '<b-input v-model="newSubscriptions.description"></b-input>' +
+          '</b-field>' +
+          '<b-field>' +
+            '<b-input v-model="newSubscriptions.duration_in_days"></b-input>' +
+          '</b-field>'
+        this.$dialog.confirm({
+          title: 'New subscription',
+          message: html,
+          confirmText: 'Ok',
+          cancelText: 'Cancel'
+        })
+      }
     }
   }
 </script>
