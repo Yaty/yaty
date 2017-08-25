@@ -19,78 +19,67 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           <p class="subtitle">General information</p>
         </div>
         <div class="column is-one-quarter">
-          <b-field label="Name">
-            <b-input v-model="gym.name"></b-input>
+          <b-field label="Name" :type="$v.gym.name.$invalid ? 'is-danger' : ''" :message="$v.gym.name.$invalid ? 'This name is invalid.' : ''">
+            <b-input maxlength="45" v-model="gym.name"></b-input>
           </b-field>
 
-          <label class="label has-text-centered">Logo <i @click="displayLogo" class="fa fa-search" style="cursor: pointer; vertical-align: middle;"></i></label>
-          <div class="file has-name is-centered">
-            <label class="file-label">
-              <input @change="setLogo" class="file-input" type="file" accept="image/gif,image/jpeg,image/png" name="resume">
-              <span class="file-cta">
-              <span class="file-icon">
-                <i class="fa fa-upload"></i>
-              </span>
-              <span class="file-label">
-                Choose a logo…
-              </span>
-            </span>
-              <span class="file-name" v-if="logoName">
-              {{ logoName }}
-            </span>
-            </label>
-          </div>
+          <label class="label">Logo <i @click="displayLogo" class="fa fa-search" style="cursor: pointer; vertical-align: middle;"></i></label>
+          <b-field>
+            <b-upload @input="setLogo" v-model="files" :multiple="false" accept="image/gif,image/jpeg,image/png">
+              <a class="button is-primary">
+                <b-icon pack="fa" icon="upload"></b-icon>
+                <span class="is-hidden-mobile" :title="logoName || ''">{{ logoName ? logoName.substr(0, 10) + ' ...' :  "Upload a logo"}}</span>
+              </a>
+            </b-upload>
+          </b-field>
         </div>
 
         <div class="column is-three-quarters">
-          <b-field label="Description" expanded>
+          <b-field label="Description" expanded :type="$v.gym.description.$invalid ? 'is-danger' : ''" :message="$v.gym.description.$invalid ? 'This description is invalid.' : ''">
             <b-input type="textarea" maxlength="250" v-model="gym.description"></b-input>
           </b-field>
         </div>
 
         <div class="column is-full">
           <hr/>
-        </div>
-
-        <div class="column is-full">
           <p class="subtitle">Contact</p>
         </div>
 
         <div class="column is-one-third">
-          <b-field label="E-mail">
-            <b-input type="email" v-model="gym.email"></b-input>
+          <b-field label="E-mail" :type="$v.gym.email.$invalid ? 'is-danger' : ''" :message="$v.gym.email.$invalid ? 'This email is invalid.' : ''">
+            <b-input maxlength="45" v-model="gym.email"></b-input>
           </b-field>
         </div>
 
         <div class="column is-one-third">
-          <b-field label="Phone n°1">
-            <b-input type="tel" v-model="gym.phone_number1"></b-input>
+          <b-field label="Phone n°1" :type="$v.gym.phone_number1.$invalid ? 'is-danger' : ''" :message="$v.gym.phone_number1.$invalid ? 'This number is invalid.' : ''">
+            <b-input maxlength="10" type="tel" v-model="gym.phone_number1"></b-input>
           </b-field>
         </div>
 
         <div class="column is-one-third">
-          <b-field label="Phone n°2">
-            <b-input type="tel" v-model="gym.phone_number2"></b-input>
+          <b-field label="Phone n°2" :type="$v.gym.phone_number2.$invalid ? 'is-danger' : ''" :message="$v.gym.phone_number2.$invalid ? 'This number is invalid.' : ''">
+            <b-input maxlength="10" type="tel" v-model="gym.phone_number2"></b-input>
           </b-field>
         </div>
 
         <div class="column is-2">
-          <b-field label="Street number">
+          <b-field label="Street number" :type="$v.gym.street_number.$invalid ? 'is-danger' : ''" :message="$v.gym.street_number.$invalid ? 'This number is invalid.' : ''">
             <b-input type="number" v-model="gym.street_number"></b-input>
           </b-field>
         </div>
         <div class="column is-3">
-          <b-field label="Street name">
-            <b-input v-model="gym.street_name"></b-input>
+          <b-field label="Street name" :type="$v.gym.street_name.$invalid ? 'is-danger' : ''" :message="$v.gym.street_name.$invalid ? 'This name is invalid.' : ''">
+            <b-input maxlength="100" v-model="gym.street_name"></b-input>
           </b-field>
         </div>
         <div class="column is-2">
-          <b-field label="City">
-            <b-input v-model="gym.city"></b-input>
+          <b-field label="City" :type="$v.gym.city.$invalid ? 'is-danger' : ''" :message="$v.gym.city.$invalid ? 'This city is invalid.' : ''">
+            <b-input maxlength="45" v-model="gym.city"></b-input>
           </b-field>
         </div>
         <div class="column is-2">
-          <b-field label="Postal code">
+          <b-field label="Postal code" :type="$v.gym.postal_code.$invalid ? 'is-danger' : ''" :message="$v.gym.postal_code.$invalid ? 'This code is invalid.' : ''">
             <b-input type="number" v-model="gym.postal_code"></b-input>
           </b-field>
         </div>
@@ -104,9 +93,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
         <div class="column is-full">
           <hr/>
-        </div>
-
-        <div class="column is-full">
           <p class="subtitle">Staff</p>
         </div>
 
@@ -419,6 +405,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         },
         gym: null,
         logo: null,
+        files: null,
         staff: null,
         loading: null,
         error: null,
@@ -433,7 +420,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         requiredIf: requiredIf('ready'),
         name: {
           required,
-          minLength: minLength(3)
+          minLength: minLength(3),
+          maxLength: maxLength(45)
         },
         id: {
           required,
@@ -444,19 +432,30 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         },
         'email': {
           required,
-          email
+          email,
+          maxLength: maxLength(45)
         },
         phone_number1: {
-          numeric
+          numeric,
+          maxLength: maxLength(45)
         },
         phone_number2: {
-          numeric
+          numeric,
+          maxLength: maxLength(45)
         },
         street_number: {
-          numeric
+          numeric,
+          maxLength: maxLength(4)
+        },
+        street_name: {
+          maxLength: maxLength(100)
+        },
+        city: {
+          maxLength: maxLength(45)
         },
         postal_code: {
-          numeric
+          numeric,
+          maxLength: maxLength(45)
         }
       },
       staff: {
@@ -489,7 +488,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       this.axios.get(process.env.BACKEND + 'gyms/' + this.user.selectedGym.id)
         .then(res => {
           this.gym = res.data.gym
-          this.logoName = this.gym.logo ? 'New logo' : 'Add a logo'
+          this.logoName = res.data.logo ? 'New logo' : null
           this.staff = res.data.staff
           return this.axios.get(process.env.BACKEND + 'users/roles')
         })
@@ -531,10 +530,10 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         if (!this.logo) this.loadLogo().then(alert)
         else alert()
       },
-      setLogo (logo) {
-        const target = logo.target
-        if (target && target.files && target.files.length === 1 && /\.(jpe?g|png|gif)$/i.test(target.files[0].name)) {
-          const file = target.files[0]
+      setLogo () {
+        const target = this.files
+        if (target && target.length === 1 && /\.(jpe?g|png|gif)$/i.test(target[0].name)) {
+          const file = target[0]
           this.logoName = file.name
 
           const reader = new window.FileReader()
@@ -548,8 +547,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         }
       },
       update () {
-        console.log(JSON.stringify(this.$v, null, 2))
-        /*
         this.axios.put(process.env.BACKEND + 'gyms/update', {
           gym: this.gym,
           staff: this.staff
@@ -573,7 +570,6 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           .catch(e => {
             console.log(e)
           })
-                   */
       }
     }
   }
