@@ -544,6 +544,11 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         }
       },
       update () {
+        if (this.$v.$invalid) {
+          this.error = 'Can\'t update, check your inputs.'
+          return
+        }
+
         this.axios.put(process.env.BACKEND + 'gyms/update', {
           gym: this.gym,
           staff: this.staff
