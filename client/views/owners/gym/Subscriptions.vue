@@ -15,11 +15,12 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       </div>
 
       <div class="column has-text-centered">
-        <a class="button is-primary" @click="setNewSubscription">New subscription</a>
+        <a class="button is-primary" @click="addSubscriptionRow">New subscription</a>
       </div>
 
       <div class="column is-full">
         <b-table
+          ref="table"
           :data="subscriptions"
           striped
           narrowed
@@ -38,17 +39,29 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
             </b-table-column>
 
             <b-table-column field="Duration" label="Duration" sortable centered>
-              {{ props.row.duration_in_days }} days
+              {{ props.row.duration_in_days ? props.row.duration_in_days + ' days' : '' }}
             </b-table-column>
           </template>
 
           <template slot="detail" scope="props">
-            <div class="content">
-              <p>
-                <strong>{{ props.row.label }}</strong>
-                <br>
-                Actions ici
-              </p>
+            <div class="columns">
+              <div class="column is-one-third">
+                <b-field>
+                  <b-input v-model="props.row.label" placeholder="Label"></b-input>
+                </b-field>
+              </div>
+
+              <div class="column is-one-third">
+                <b-field>
+                  <b-input v-model="props.row.description" placeholder="Description"></b-input>
+                </b-field>
+              </div>
+
+              <div class="column is-one-third">
+                <b-field>
+                  <b-input type="number" v-model="props.row.duration_in_days" placeholder="Duration"></b-input>
+                </b-field>
+              </div>
             </div>
           </template>
 
@@ -96,23 +109,23 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       })
     },
     methods: {
-      setNewSubscription () {
-        const html =
-          '<b-field label="Label">' +
-            '<b-input v-model="newSubscriptions.label"></b-input>' +
-          '</b-field>' +
-          '<b-field>' +
-            '<b-input v-model="newSubscriptions.description"></b-input>' +
-          '</b-field>' +
-          '<b-field>' +
-            '<b-input v-model="newSubscriptions.duration_in_days"></b-input>' +
-          '</b-field>'
-        this.$dialog.confirm({
-          title: 'New subscription',
-          message: html,
-          confirmText: 'Ok',
-          cancelText: 'Cancel'
+      addSubscriptionRow () {
+        this.subscriptions.push({
+          label: null,
+          description: null,
+          duration_in_days: null
         })
+
+        // For now we use the table API from a ref, is there a better way to do this ? It's highly coupled with this
+        // Disable every enabled rows detail
+        const rows = this.$refs.table.visibleData
+        for (let i = 0; i < rows.length - 1; i++) {
+          const visible = this.$refs.table.isVisibleDetailRow(rows[i])
+          if (visible) this.$refs.table.toggleDetails(rows[i])
+        }
+
+        // Enable last row detail
+        this.$refs.table.toggleDetails(rows[this.subscriptions.length - 1])
       }
     }
   }
