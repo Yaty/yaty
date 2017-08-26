@@ -9,84 +9,106 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 <template>
   <div class="box">
     <b-loading :active.sync="isLoading" :canCancel="true"></b-loading>
-    <div class="columns is-multiline">
-      <div class="column is-narrow">
-        <p class="title">{{ user.selectedGym.name }}</p>
-      </div>
+    <div v-if="ready">
+      <div class="columns is-multiline">
+        <div class="column is-narrow">
+          <p class="title">{{ user.selectedGym.name }}</p>
+        </div>
 
-      <div class="column has-text-centered">
-        <a class="button is-primary" @click="addSubscriptionRow">New subscription</a>
-      </div>
+        <div class="column has-text-centered">
+          <a class="button is-primary" @click="addSubscriptionRow">New subscription</a>
+        </div>
 
-      <div class="column is-full">
-        <b-table
-          ref="table"
-          :data="subscriptions"
-          striped
-          narrowed
-          mobile-cards
-          paginated
-          per-page="20"
-          detailed
-        >
-          <template scope="props">
-            <b-table-column field="label" label="Label" sortable centered>
-              {{ props.row.label }}
-            </b-table-column>
+        <div class="column is-full">
+          <b-table
+            ref="table"
+            :data="subscriptions"
+            striped
+            narrowed
+            mobile-cards
+            paginated
+            per-page="20"
+            detailed
+          >
+            <template scope="props">
+              <b-table-column field="label" label="Label" sortable centered>
+                {{ props.row.label }}
+              </b-table-column>
 
-            <b-table-column field="description" label="Description" sortable centered>
-              {{ props.row.description }}
-            </b-table-column>
+              <b-table-column field="description" label="Description" sortable centered>
+                {{ props.row.description }}
+              </b-table-column>
 
-            <b-table-column field="Duration" label="Duration" sortable centered>
-              {{ props.row.duration_in_days ? props.row.duration_in_days + ' days' : '' }}
-            </b-table-column>
-          </template>
+              <b-table-column field="Duration" label="Duration" sortable centered>
+                {{ props.row.duration_in_days ? props.row.duration_in_days + ' days' : '' }}
+              </b-table-column>
+            </template>
 
-          <template slot="detail" scope="props">
-            <div class="columns">
-              <div class="column is-one-third">
-                <b-field>
-                  <b-input v-model="props.row.label" placeholder="Label"></b-input>
-                </b-field>
+            <template slot="detail" scope="props">
+              <div class="columns">
+                <div class="column is-one-third">
+                  <b-field :type="$v.subscriptions.$each[props.index].label.$invalid ? 'is-danger' : ''" :message="$v.subscriptions.$each[props.index].label.$invalid ? 'This label is invalid.' : ''">
+                    <b-input maxlength="45" v-model="props.row.label" placeholder="Label"></b-input>
+                  </b-field>
+                </div>
+
+                <div class="column is-one-third">
+                  <b-field :type="$v.subscriptions.$each[props.index].description.$invalid ? 'is-danger' : ''" :message="$v.subscriptions.$each[props.index].description.$invalid ? 'This description is invalid.' : ''">
+                    <b-input maxlength="45" v-model="props.row.description" placeholder="Description"></b-input>
+                  </b-field>
+                </div>
+
+                <div class="column is-one-third">
+                  <b-field :type="$v.subscriptions.$each[props.index].duration_in_days.$invalid ? 'is-danger' : ''" :message="$v.subscriptions.$each[props.index].duration_in_days.$invalid ? 'This duration is invalid.' : ''">
+                    <b-input type="number" v-model="props.row.duration_in_days" placeholder="Duration"></b-input>
+                  </b-field>
+                </div>
               </div>
+            </template>
 
-              <div class="column is-one-third">
-                <b-field>
-                  <b-input v-model="props.row.description" placeholder="Description"></b-input>
-                </b-field>
-              </div>
-
-              <div class="column is-one-third">
-                <b-field>
-                  <b-input type="number" v-model="props.row.duration_in_days" placeholder="Duration"></b-input>
-                </b-field>
-              </div>
+            <div slot="empty" class="has-text-centered">
+              There is currently no subscriptions to display.
             </div>
-          </template>
-
-          <div slot="empty" class="has-text-centered">
-            There is currently no subscriptions to display.
-          </div>
-        </b-table>
+          </b-table>
+        </div>
       </div>
+    </div>
+    <div v-else-if="error">
+      Error : {{ error }}
     </div>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
+  import { required, requiredIf, minLength, numeric, maxLength } from 'vuelidate/lib/validators'
 
   export default {
     data () {
       return {
         subscriptions: [],
-        newSubscription: {
-          label: null,
-          description: null,
-          duration_in_days: null
-        },
-        isLoading: null
+        isLoading: null,
+        ready: null,
+        error: null
+      }
+    },
+    validations: {
+      subscriptions: {
+        requiredIf: requiredIf('ready'),
+        $each: {
+          label: {
+            required,
+            minLength: minLength(4),
+            maxLength: maxLength(45)
+          },
+          description: {
+            maxLength: maxLength(45)
+          },
+          duration_in_days: {
+            required,
+            numeric
+          }
+        }
       }
     },
     computed: mapGetters({
@@ -102,9 +124,11 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       .then(res => {
         this.subscriptions = res.data.subscriptions
         this.isLoading = false
+        this.ready = true
       })
       .catch(e => {
         this.isLoading = false
+        this.error = e.response.statusText
         console.log(e)
       })
     },
