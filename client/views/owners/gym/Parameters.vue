@@ -139,10 +139,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         </div>
 
       </div>
-      <div v-else-if="loading" class="has-text-centered">
-        <i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw"></i>
-      </div>
-      <div v-else>
+      <div v-else-if="error">
         Error : {{ error }}
       </div>
     </div>
