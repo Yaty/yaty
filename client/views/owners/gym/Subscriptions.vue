@@ -19,6 +19,10 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           <a class="button is-primary" @click="addSubscriptionRow">New subscription</a>
         </div>
 
+        <div class="column is-narrow">
+          <a class="button is-info is-pulled-right" :disabled="$v.$invalid" :title="$v.$invalid ? 'Please check the validity of your inputs.' : ''" @click="update">Update</a>
+        </div>
+
         <div class="column is-full">
           <b-table
             ref="table"
@@ -70,6 +74,10 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
               There is currently no subscriptions to display.
             </div>
           </b-table>
+        </div>
+
+        <div class="column is-full" v-if="subscriptions.length > 5">
+          <a class="button is-info is-pulled-right" :disabled="$v.$invalid" :title="$v.$invalid ? 'Please check the validity of your inputs.' : ''" @click="update">Update</a>
         </div>
       </div>
     </div>
@@ -133,6 +141,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       })
     },
     methods: {
+      // TODO : Debug this function when there is pagination
       addSubscriptionRow () {
         this.subscriptions.push({
           label: null,
@@ -150,6 +159,28 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 
         // Enable last row detail
         this.$refs.table.toggleDetails(rows[this.subscriptions.length - 1])
+      },
+      update () {
+        if (this.$v.$invalid) {
+          this.error = 'Can\'t update, check your inputs.'
+          return
+        }
+
+        this.axios.put(process.env.BACKEND + 'gyms/subscriptions', {
+          subscriptions: this.subscriptions,
+          gym: this.user.selectedGym.id
+        })
+          .then(res => {
+            this.$toast.open({
+              message: this.user.selectedGym.name + ' successfully updated !',
+              type: 'is-success',
+              position: 'is-bottom-right'
+            })
+          })
+          .catch(e => {
+            this.error = e.response.statusText
+            console.log('sub', e)
+          })
       }
     }
   }
