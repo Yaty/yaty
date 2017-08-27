@@ -146,7 +146,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         this.subscriptions.push({
           label: null,
           description: null,
-          duration_in_days: null
+          duration_in_days: null,
+          new: true
         })
 
         // For now we use the table API from a ref, is there a better way to do this ? It's highly coupled with this
