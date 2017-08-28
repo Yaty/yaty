@@ -51,19 +51,19 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
             <template slot="detail" scope="props">
               <div class="columns">
                 <div class="column is-one-third">
-                  <b-field :type="$v.subscriptions.$each[props.index].label.$invalid ? 'is-danger' : ''" :message="$v.subscriptions.$each[props.index].label.$invalid ? 'This label is invalid.' : ''">
-                    <b-input maxlength="45" v-model="props.row.label" placeholder="Label"></b-input>
+                  <b-field :type="getType($v.subscriptions.$each[props.index].label.$invalid)" :message="getMessage('label', props.index)">
+                    <b-input v-model="props.row.label" placeholder="Label"></b-input>
                   </b-field>
                 </div>
 
                 <div class="column is-one-third">
-                  <b-field :type="$v.subscriptions.$each[props.index].description.$invalid ? 'is-danger' : ''" :message="$v.subscriptions.$each[props.index].description.$invalid ? 'This description is invalid.' : ''">
-                    <b-input maxlength="45" v-model="props.row.description" placeholder="Description"></b-input>
+                  <b-field :type="getType($v.subscriptions.$each[props.index].description.$invalid)" :message="getMessage('description', props.index)">
+                    <b-input v-model="props.row.description" placeholder="Description"></b-input>
                   </b-field>
                 </div>
 
                 <div class="column is-one-third">
-                  <b-field :type="$v.subscriptions.$each[props.index].duration_in_days.$invalid ? 'is-danger' : ''" :message="$v.subscriptions.$each[props.index].duration_in_days.$invalid ? 'This duration is invalid.' : ''">
+                  <b-field :type="getType($v.subscriptions.$each[props.index].duration_in_days.$invalid)" :message="getMessage('duration_in_days', props.index)">
                     <b-input type="number" v-model="props.row.duration_in_days" placeholder="Duration"></b-input>
                   </b-field>
                 </div>
@@ -141,6 +141,47 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       })
     },
     methods: {
+      /**
+       * This function take a field name and it's index inside the members array
+       * It look into validation to see if some fields are valid or not
+       * If some fields are invalid then it will return an appropriate message
+       * @param fieldName The key of the field
+       * @param index The position in the members array
+       * @returns {string}
+       */
+      getMessage (fieldName, index) {
+        if (!this.$v.subscriptions.$invalid) return '' // If it's valid there is no need for a message
+
+        const validationStatus = this.$v.subscriptions.$each[index][fieldName]
+        const validations = Object.keys(validationStatus)
+        let message = ''
+
+        for (let i = 0; i < validations.length; i++) {
+          let validation = validations[i]
+          if (!validationStatus[validation] && validation.charAt(0) !== '$') {
+            switch (validation) {
+              case 'numeric':
+                message = 'This field needs to be numeric.'
+                break
+              case 'required':
+                message = 'This field is required.'
+                break
+              case 'maxLength':
+                message = 'This field cannot have more than ' + validationStatus.$params.maxLength.max + ' characters.'
+                break
+              case 'minLength':
+                message = 'This field cannot have less than ' + validationStatus.$params.minLength.min + ' characters.'
+                break
+            }
+            if (message.length > 0) return message
+          }
+        }
+
+        return message
+      },
+      getType (fieldIsInvalid) {
+        return fieldIsInvalid ? 'is-danger' : ''
+      },
       // TODO : Debug this function when there is pagination
       addSubscriptionRow () {
         this.subscriptions.push({

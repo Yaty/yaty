@@ -151,7 +151,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
        * @returns {string}
        */
       getMessage (fieldName, index) {
-        if (!this.$v.members.$each[index].$invalid) return '' // If it's valid there is no need for a message
+        if (!this.$v.members.$invalid) return '' // If it's valid there is no need for a message
 
         const validationStatus = this.$v.members.$each[index][fieldName]
         const validations = Object.keys(validationStatus)

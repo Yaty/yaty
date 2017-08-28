@@ -19,8 +19,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           <p class="subtitle">General information</p>
         </div>
         <div class="column is-one-quarter">
-          <b-field label="Name" :type="$v.gym.name.$invalid ? 'is-danger' : ''" :message="$v.gym.name.$invalid ? 'This name is invalid.' : ''">
-            <b-input maxlength="45" v-model="gym.name"></b-input>
+          <b-field label="Name" :type="getType($v.gym.name.$invalid)" :message="getMessage('name')">
+            <b-input v-model="gym.name"></b-input>
           </b-field>
 
           <label class="label">Logo <i @click="displayLogo" class="fa fa-search" style="cursor: pointer; vertical-align: middle;"></i></label>
@@ -35,8 +35,8 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         </div>
 
         <div class="column is-three-quarters">
-          <b-field label="Description" expanded :type="$v.gym.description.$invalid ? 'is-danger' : ''" :message="$v.gym.description.$invalid ? 'This description is invalid.' : ''">
-            <b-input type="textarea" maxlength="250" v-model="gym.description"></b-input>
+          <b-field label="Description" expanded :type="getType($v.gym.description.$invalid)" :message="getMessage('description')">
+            <b-input type="textarea" v-model="gym.description"></b-input>
           </b-field>
         </div>
 
@@ -46,40 +46,40 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         </div>
 
         <div class="column is-one-third">
-          <b-field label="E-mail" :type="$v.gym.email.$invalid ? 'is-danger' : ''" :message="$v.gym.email.$invalid ? 'This email is invalid.' : ''">
-            <b-input maxlength="45" v-model="gym.email"></b-input>
+          <b-field label="E-mail" :type="getType($v.gym.email.$invalid)" :message="getMessage('email')">
+            <b-input v-model="gym.email"></b-input>
           </b-field>
         </div>
 
         <div class="column is-one-third">
-          <b-field label="Phone n°1" :type="$v.gym.phone_number1.$invalid ? 'is-danger' : ''" :message="$v.gym.phone_number1.$invalid ? 'This number is invalid.' : ''">
-            <b-input maxlength="10" type="tel" v-model="gym.phone_number1"></b-input>
+          <b-field label="Phone n°1" :type="getType($v.gym.phone_number1.$invalid)" :message="getMessage('phone_number1')">
+            <b-input type="tel" v-model="gym.phone_number1"></b-input>
           </b-field>
         </div>
 
         <div class="column is-one-third">
-          <b-field label="Phone n°2" :type="$v.gym.phone_number2.$invalid ? 'is-danger' : ''" :message="$v.gym.phone_number2.$invalid ? 'This number is invalid.' : ''">
-            <b-input maxlength="10" type="tel" v-model="gym.phone_number2"></b-input>
+          <b-field label="Phone n°2" :type="getType($v.gym.phone_number2.$invalid)" :message="getMessage('phone_number2')">
+            <b-input type="tel" v-model="gym.phone_number2"></b-input>
           </b-field>
         </div>
 
         <div class="column is-2">
-          <b-field label="Street number" :type="$v.gym.street_number.$invalid ? 'is-danger' : ''" :message="$v.gym.street_number.$invalid ? 'This number is invalid.' : ''">
+          <b-field label="Street number" :type="getType($v.gym.street_number.$invalid)" :message="getMessage('street_number')">
             <b-input type="number" v-model="gym.street_number"></b-input>
           </b-field>
         </div>
         <div class="column is-3">
-          <b-field label="Street name" :type="$v.gym.street_name.$invalid ? 'is-danger' : ''" :message="$v.gym.street_name.$invalid ? 'This name is invalid.' : ''">
-            <b-input maxlength="100" v-model="gym.street_name"></b-input>
+          <b-field label="Street name" :type="getType($v.gym.street_name.$invalid)" :message="getMessage('street_name')">
+            <b-input v-model="gym.street_name"></b-input>
           </b-field>
         </div>
         <div class="column is-2">
-          <b-field label="City" :type="$v.gym.city.$invalid ? 'is-danger' : ''" :message="$v.gym.city.$invalid ? 'This city is invalid.' : ''">
-            <b-input maxlength="45" v-model="gym.city"></b-input>
+          <b-field label="City" :type="getType($v.gym.city.$invalid)" :message="getMessage('city')">
+            <b-input v-model="gym.city"></b-input>
           </b-field>
         </div>
         <div class="column is-2">
-          <b-field label="Postal code" :type="$v.gym.postal_code.$invalid ? 'is-danger' : ''" :message="$v.gym.postal_code.$invalid ? 'This code is invalid.' : ''">
+          <b-field label="Postal code" :type="getType($v.gym.postal_code.$invalid)" :message="getMessage('postal_code')">
             <b-input type="number" v-model="gym.postal_code"></b-input>
           </b-field>
         </div>
@@ -502,6 +502,51 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         })
     },
     methods: {
+      /**
+       * This function take a field name and it's index inside the members array
+       * It look into validation to see if some fields are valid or not
+       * If some fields are invalid then it will return an appropriate message
+       * We are only checking for gym informations
+       * @param fieldName The key of the field
+       * @param index The position in the members array
+       * @returns {string}
+       */
+      getMessage (fieldName) {
+        if (!this.$v.gym.$invalid) return '' // If it's valid there is no need for a message
+
+        const validationStatus = this.$v.gym[fieldName]
+        const validations = Object.keys(validationStatus)
+        let message = ''
+
+        for (let i = 0; i < validations.length; i++) {
+          let validation = validations[i]
+          if (!validationStatus[validation] && validation.charAt(0) !== '$') {
+            switch (validation) {
+              case 'numeric':
+                message = 'This field needs to be numeric.'
+                break
+              case 'email':
+                message = 'This email is invalid.'
+                break
+              case 'required':
+                message = 'This field is required.'
+                break
+              case 'maxLength':
+                message = 'This field cannot have more than ' + validationStatus.$params.maxLength.max + ' characters.'
+                break
+              case 'minLength':
+                message = 'This field cannot have less than ' + validationStatus.$params.minLength.min + ' characters.'
+                break
+            }
+            if (message.length > 0) return message
+          }
+        }
+
+        return message
+      },
+      getType (fieldIsInvalid) {
+        return fieldIsInvalid ? 'is-danger' : ''
+      },
       loadLogo () {
         return new Promise((resolve, reject) => {
           this.axios.get(process.env.BACKEND + 'gyms/' + this.user.selectedGym.id + '/logo')
