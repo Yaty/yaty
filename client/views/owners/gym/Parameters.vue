@@ -1,9 +1,19 @@
 <!--
-Copyright (C) Hugo Da Roit <contact@hdaroit.fr> - All Rights Reserved
-Unauthorized copying of this file, via any medium is strictly prohibited
-Proprietary and confidential
-Written by Hugo Da Roit <contact@hdaroit.fr>, 2017
-Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
+Yaty - Climbing Gym Management
+Copyright (C) 2017 - Hugo Da Roit <contact@hdaroit.fr>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <template>
@@ -91,9 +101,12 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           </b-field>
         </div>
 
-        <div class="column is-full">
+        <div class="column is-full level">
           <hr/>
-          <p class="subtitle">Staff</p>
+          <p class="level">
+            <span class="subtitle level-left">Staff</span>
+            <span class="button is-info is-narrow level-right" @click="addStaff">Add</span>
+          </p>
         </div>
 
         <div class="column is-full">
@@ -401,6 +414,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
           ZW: 'Zimbabwe'
         },
         gym: null,
+        members: null,
         logo: null,
         files: null,
         staff: null,
@@ -502,6 +516,16 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         })
     },
     methods: {
+      fetchStaff () {
+        return new Promise((resolve, reject) => {
+          this.axios.get(process.env.BACKEND + 'gyms/' + this.user.selectedGym.id + '/staff')
+            .then(res => {
+              this.staff = res.data.staff
+              return resolve()
+            })
+            .catch(reject)
+        })
+      },
       /**
        * This function take a field name and it's index inside the members array
        * It look into validation to see if some fields are valid or not
@@ -546,6 +570,44 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       },
       getType (fieldIsInvalid) {
         return fieldIsInvalid ? 'is-danger' : ''
+      },
+      fetchMembers () {
+        return new Promise((resolve, reject) => {
+          this.axios.get(process.env.BACKEND + 'gyms/members', {
+            params: {
+              gym: this.user.selectedGym.id
+            }
+          })
+            .then(res => {
+              this.members = res.data.members
+            })
+            .catch(reject)
+        })
+      },
+      addStaff () {
+        if (this.members && this.members.length) {
+          // TODO : select user e-mail with autocomplete + select role
+          this.$dialog.prompt({
+            message: `Select a future staff member by his email`,
+            inputMaxlength: 45,
+            inputPlaceholder: 'example@example.com',
+            onConfirm: (value) => {
+              for (let i = 0; i < this.members.length; i++) {
+                if (this.members[i].email === value) {
+                  this.axios.post(process.env.BACKEND + 'gyms/staff/add', { email: value })
+                    .then()
+                  return
+                }
+              }
+              this.$toast.open('This member doesn\'t exists. Please create this account first.')
+              this.addStaff()
+              this.fetchStaff().then(() => this.$toast.open('This member is now in the staff !'))
+            }
+          })
+        } else {
+          this.fetchMembers().then(() => this.addStaff())
+            .catch(e => console.log(e))
+        }
       },
       loadLogo () {
         return new Promise((resolve, reject) => {

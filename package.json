@@ -1,19 +1,13 @@
 {
-  "name": "yaty-admin",
+  "name": "Yaty",
   "version": "0.0.1",
   "description": "Climbing gym management",
-  "license": "Closed-source code",
-  "private": true,
+  "license": "GNU GPL v3",
+  "private": false,
   "author": {
     "name": "Hugo Da Roit",
     "email": "contact@hdaroit.fr",
     "url": "hdaroit.fr"
-  },
-  "basedOn": {
-    "project": "Vue-admin",
-    "author": "Fangdun Cai",
-    "email": "cfddream@gmail.com",
-    "url": "fundon.me"
   },
   "keywords": [
     "admin",
@@ -21,7 +15,10 @@
     "dashboard",
     "data",
     "visualization",
-    "vue"
+    "vue",
+    "climbing",
+    "management",
+    "gym"
   ],
   "engines": {
     "node": ">=4",

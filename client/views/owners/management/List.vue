@@ -1,9 +1,19 @@
 <!--
-Copyright (C) Hugo Da Roit <contact@hdaroit.fr> - All Rights Reserved
-Unauthorized copying of this file, via any medium is strictly prohibited
-Proprietary and confidential
-Written by Hugo Da Roit <contact@hdaroit.fr>, 2017
-Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
+Yaty - Climbing Gym Management
+Copyright (C) 2017 - Hugo Da Roit <contact@hdaroit.fr>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <template>
@@ -56,7 +66,7 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
         </b-table-column>
 
         <b-table-column field="" label="Subscription" sortable centered>
-          TODO
+          {{ props.row.subscription }}
         </b-table-column>
 
         <b-table-column field="lastLogin" label="Last connection" sortable centered>
@@ -67,12 +77,31 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
       </template>
 
       <template slot="detail" scope="props">
-        <div class="content">
-          <p>
-            <strong>{{ props.row.name }} {{ props.row.lastname }}</strong>
-            <br>
-            Actions ici
-          </p>
+        <!-- CHECK THAT THE END DATE OF THE SUBSCRIPTION IS UPDATED -->
+        <div class="columns">
+          <div v-if="!props.row.lastLogin" class="column is-one-quarter">
+            <b-field>
+              <b-input v-model="props.email"></b-input>
+            </b-field>
+          </div>
+
+          <div v-if="!props.row.lastLogin" class="column is-one-quarter">
+            <b-field>
+              <b-input v-model="props.name"></b-input>
+            </b-field>
+          </div>
+
+          <div v-if="!props.row.lastLogin" class="column is-one-quarter">
+            <b-field>
+              <b-input v-model="props.lastname"></b-input>
+            </b-field>
+          </div>
+
+          <div :class="!props.row.lastLogin ? 'column is-one-quarter' : 'column'">
+            <b-field class="has-text-centered is-fullwidth">
+              <b-select expanded v-model="props.subscription"></b-select>
+            </b-field>
+          </div>
         </div>
       </template>
 
@@ -86,8 +115,13 @@ Based on Vue-admin from Fangdun Cai <cfddream@gmail.com>
 <script>
   import { mapGetters } from 'vuex'
   import filters from '../../../filters'
+  import BField from '../../../../node_modules/buefy/src/components/field/Field.vue'
+  import BInput from '../../../../node_modules/buefy/src/components/input/Input.vue'
 
   export default {
+    components: {
+      BInput,
+      BField},
     data () {
       return {
         members: [],
