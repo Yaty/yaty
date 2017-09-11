@@ -16,6 +16,7 @@ Managing your gym has never been easier :) [Demo here !](#)
 5. Fast editing
 6. Members research
 7. Authentication
+8. Desktop or web app
 
 ## Soon
 1. Stats, graphs
